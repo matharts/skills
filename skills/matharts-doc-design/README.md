@@ -48,6 +48,8 @@ MathArts 文档设计诊断与改写基准层。它统一结构、视觉层级�
 
 ### 推荐章节顺序
 
+当对应下游 Skill 存在时，以其模板字段为准；这里仅用于审查阅读路径、章节先后和视觉层级。
+
 | 文档类型 | 推荐章节顺序 |
 | -------- | ------------ |
 | README | 项目定位 → 适用读者 → Quick Start → 常见任务 → 文档入口 → 贡献 → 许可证 |
@@ -85,6 +87,7 @@ MathArts 文档设计诊断与改写基准层。它统一结构、视觉层级�
 | ---- | ---- |
 | `examples/before-after-readme.md` | README 入口、快速开始、常见任务重排 |
 | `examples/before-after-rfc.md` | RFC 从简短想法升级为可评审提案 |
+| `examples/before-after-zh-style.md` | 中文技术文档去口号、去翻译腔、稳定术语 |
 | `examples/review-findings.md` | 审查模式输出 findings 和 suggested shape |
 | `examples/rewrite-summary.md` | 改写模式完成后的简短总结 |
 

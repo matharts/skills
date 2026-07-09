@@ -6,13 +6,19 @@ Use this shape when the user asks for `review`, 审查, 评审, or 检查.
 ## Findings
 
 - [P1] Missing first-contact clarity
-  The README starts with implementation folders but never says what the project is, who should use it, or the safest next step. Add a short positioning paragraph and a Quick Start section before internal details.
+  位置：README.md opening section
+  影响：First-time readers cannot tell what the project is, who should use it, or the safest next step.
+  建议：Add a short positioning paragraph and a Quick Start section before internal details.
 
 - [P2] Contribution path is hidden
-  The document mentions PRs near the end but does not explain what changes require RFC review. Add a Contributing section that links contribution workflow to review expectations.
+  位置：README.md Contributing area
+  影响：Contributors may open changes without knowing when RFC review is required.
+  建议：Add a Contributing section that links contribution workflow to review expectations.
 
 - [P3] Generic headings reduce scanning
-  Headings such as "Other" and "Notes" hide reader tasks. Replace them with task-oriented headings such as "Common Tasks" or "Maintenance Notes".
+  位置：README.md headings
+  影响：Headings such as "Other" and "Notes" hide reader tasks and slow scanning.
+  建议：Replace them with task-oriented headings such as "Common Tasks" or "Maintenance Notes".
 
 ## Suggested Shape
 
@@ -28,4 +34,5 @@ Use this shape when the user asks for `review`, 审查, 评审, or 检查.
 
 - Lead with actionable problems, not general praise.
 - Explain why the issue matters to readers or maintainers.
+- Include position, impact, and suggested action for every finding.
 - Suggest a concrete shape without rewriting the entire document.

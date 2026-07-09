@@ -50,9 +50,14 @@ MathArts 文档设计诊断与改写基准层。它负责文档的结构、视�
 ## Findings
 
 - [P1] <问题标题>
-  <为什么这是问题，以及建议怎么改。>
+  位置：<文件、章节或行号>
+  影响：<它如何影响读者任务、维护成本或协作流程>
+  建议：<可执行的修改动作>
+
 - [P2] <问题标题>
-  <为什么这是问题，以及建议怎么改。>
+  位置：<文件、章节或行号>
+  影响：<它如何影响读者任务、维护成本或协作流程>
+  建议：<可执行的修改动作>
 
 ## Suggested Shape
 
@@ -132,6 +137,8 @@ MathArts 文档设计诊断与改写基准层。它负责文档的结构、视�
 
 这些顺序是设计基线，不替代下游 Skill 的内容合同。
 
+当对应下游 Skill 存在时，以其模板字段为准；这里仅用于审查阅读路径、章节先后和视觉层级。
+
 | 文档类型 | 推荐章节顺序 |
 | -------- | ------------ |
 | README | 项目定位 → 适用读者 → Quick Start → 常见任务 → 文档入口 → 贡献 → 许可证 |
@@ -206,6 +213,7 @@ MathArts 中文文档要克制、准确、有判断力。目标是“清楚可�
 | ---- | ---- |
 | README 入口、快速开始、常见任务重排 | `examples/before-after-readme.md` |
 | RFC 从简短想法升级为可评审提案 | `examples/before-after-rfc.md` |
+| 中文技术文档去口号、去翻译腔、稳定术语 | `examples/before-after-zh-style.md` |
 | 审查模式输出 findings 和 suggested shape | `examples/review-findings.md` |
 | 改写模式完成后的简短总结 | `examples/rewrite-summary.md` |
 

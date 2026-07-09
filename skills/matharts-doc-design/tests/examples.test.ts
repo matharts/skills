@@ -11,6 +11,7 @@ test("matharts-doc-design ships and references practical examples", async () => 
   const examples = [
     "before-after-readme.md",
     "before-after-rfc.md",
+    "before-after-zh-style.md",
     "review-findings.md",
     "rewrite-summary.md",
   ];
@@ -30,6 +31,7 @@ test("markdown examples use outer fences that allow nested code blocks", async (
   const examples = [
     "before-after-readme.md",
     "before-after-rfc.md",
+    "before-after-zh-style.md",
     "review-findings.md",
     "rewrite-summary.md",
   ];
@@ -43,5 +45,38 @@ test("markdown examples use outer fences that allow nested code blocks", async (
     for (const line of markdownFenceLines) {
       expect(line.startsWith("````markdown")).toBe(true);
     }
+  }
+});
+
+test("markdown examples have balanced fenced code blocks", async () => {
+  const examples = [
+    "before-after-readme.md",
+    "before-after-rfc.md",
+    "before-after-zh-style.md",
+    "review-findings.md",
+    "rewrite-summary.md",
+  ];
+
+  for (const example of examples) {
+    const content = await readFile(join(skillDir, "examples", example), "utf-8");
+    const stack: number[] = [];
+
+    for (const line of content.split(/\r?\n/)) {
+      const match = line.match(/^(`{3,})(?:\w+)?\s*$/);
+      if (!match) continue;
+
+      const fenceLength = match[1].length;
+      const current = stack.at(-1);
+      if (current && fenceLength < current) {
+        continue;
+      }
+      if (current) {
+        stack.pop();
+      } else {
+        stack.push(fenceLength);
+      }
+    }
+
+    expect(stack).toEqual([]);
   }
 });

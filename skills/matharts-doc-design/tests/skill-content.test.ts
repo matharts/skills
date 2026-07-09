@@ -33,4 +33,8 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
   expect(skill).toContain("只列 actionable findings");
   expect(skill).toContain("不输出泛泛优点");
   expect(skill).toContain("下游 Skill 为准");
+  expect(skill).toContain("位置：<文件、章节或行号>");
+  expect(skill).toContain("影响：<它如何影响读者任务、维护成本或协作流程>");
+  expect(skill).toContain("建议：<可执行的修改动作>");
+  expect(skill).toContain("当对应下游 Skill 存在时，以其模板字段为准");
 });
