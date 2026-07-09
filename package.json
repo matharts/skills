@@ -1,0 +1,16 @@
+{
+  "name": "matharts-skills",
+  "private": true,
+  "scripts": {
+    "validate": "bun tools/cli.ts validate",
+    "sync": "bun tools/cli.ts sync",
+    "rollback": "bun tools/cli.ts rollback",
+    "check": "bun tools/cli.ts check"
+  },
+  "dependencies": {
+    "yaml": "2.4.0"
+  },
+  "devDependencies": {
+    "@types/bun": "1.3.14"
+  }
+}
