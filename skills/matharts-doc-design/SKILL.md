@@ -1,6 +1,6 @@
 ---
 name: matharts-doc-design
-description: Use when reviewing, optimizing, rewriting, standardizing, formatting, or improving MathArts documents, including README, RFC, ADR, guides, AGENTS.md, Markdown structure, visual hierarchy, CJK-Latin spacing, tables, code blocks, callouts, Mermaid diagrams, document status metadata, and documentation reading experience.
+description: Use when document design, structure, readability, or style is the primary concern for MathArts Markdown docs, including review, rewrite, formatting, visual hierarchy, CJK-Latin spacing, tables, code blocks, callouts, Mermaid diagrams, and documentation reading experience.
 license: MIT
 compatibility: Designed for opencode and codex
 metadata:

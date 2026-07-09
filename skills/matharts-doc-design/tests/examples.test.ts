@@ -89,3 +89,17 @@ test("Chinese style example explains the rewrite in Chinese", async () => {
   expect(content).toContain("术语");
   expect(content).not.toContain("## Why This Works");
 });
+
+test("review fixtures follow structured finding format", async () => {
+  const fixture = await readFile(join(skillDir, "tests", "fixtures", "review-mode.md"), "utf-8");
+  const expected = await readFile(
+    join(skillDir, "tests", "fixtures", "expected", "review-mode.md.output"),
+    "utf-8",
+  );
+
+  for (const content of [fixture, expected]) {
+    expect(content).toContain("位置：");
+    expect(content).toContain("影响：");
+    expect(content).toContain("建议：");
+  }
+});

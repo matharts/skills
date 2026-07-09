@@ -44,3 +44,36 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
   expect(skill).toContain("先行为，后理念");
   expect(skill).toContain("优先读取与当前任务类型最接近的一个示例");
 });
+
+test("matharts-doc-design keeps execution sections in reader-task order", async () => {
+  const skill = await readFile(join(skillDir, "SKILL.md"), "utf-8");
+  const sections = [
+    "## 工作模式",
+    "## 审查模式",
+    "## 改写模式",
+    "## Open Source Markdown Style System",
+    "## 诊断维度",
+    "## 示例层",
+    "## 排版规则",
+    "## 与其他 Skill 的关系",
+  ];
+
+  const positions = sections.map((section) => skill.indexOf(section));
+  for (const position of positions) {
+    expect(position).toBeGreaterThan(-1);
+  }
+  expect(positions).toEqual([...positions].sort((a, b) => a - b));
+});
+
+test("matharts-doc-design discovery is scoped to design concerns", async () => {
+  const skill = await readFile(join(skillDir, "SKILL.md"), "utf-8");
+  const description = skill.match(/^description: (.+)$/m)?.[1] ?? "";
+
+  expect(description).toStartWith("Use when");
+  expect(description).toContain("document design");
+  expect(description).toContain("structure");
+  expect(description).toContain("readability");
+  expect(description).toContain("style");
+  expect(description).toContain("primary concern");
+  expect(description.length).toBeLessThanOrEqual(500);
+});
