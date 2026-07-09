@@ -73,7 +73,7 @@ npx skills add matharts/skills@v0.1.0 --skill matharts-doc-rfc -a opencode -y
 bun install
 
 # 校验所有 Skill
-bun tools/validate-skill.ts --check all
+bun tools/cli.ts validate --check all
 
 # 仅校验规范合规
 npx skills-ref validate skills/*/

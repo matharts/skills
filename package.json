@@ -5,7 +5,8 @@
     "validate": "bun tools/cli.ts validate",
     "sync": "bun tools/cli.ts sync",
     "rollback": "bun tools/cli.ts rollback",
-    "check": "bun tools/cli.ts check"
+    "check": "bun tools/cli.ts check",
+    "test": "bun test"
   },
   "dependencies": {
     "yaml": "2.4.0"

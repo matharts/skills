@@ -24,7 +24,7 @@ export async function checkSelfcontained(skillDir: string, skillName: string): P
       const depth = rel.split(sep).length - 1;
 
       for (const line of content.split("\n")) {
-        if ((line.match(/\.\.\//g) ?? []).length > depth) {
+        if ((line.match(/\.\.(?:\/|\\)/g) ?? []).length > depth) {
           fail(r, `${skillName}: ${rel} escapes skill dir: ${line.trim().slice(0, 80)}`);
           break;
         }

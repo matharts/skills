@@ -19,7 +19,52 @@ import { CHECK_LEVELS } from "./lib/types";
 import { validate } from "./lib/validate/index";
 import { syncSharedSource, rollbackSync } from "./lib/sync";
 
+interface CheckDeps {
+  runValidation: (level: CheckLevel) => Promise<boolean>;
+  syncSharedSource: () => Promise<void>;
+}
+
+async function runSkillsRef(skillsRoot: string, skills: string[]): Promise<boolean> {
+  if (process.env.MATHARTS_SKIP_SKILLS_REF === "1") return true;
+
+  let passed = true;
+  for (const name of skills) {
+    const proc = Bun.spawn(["npx", "--yes", "skills-ref", "validate", join(skillsRoot, name)], {
+      stdout: "inherit",
+      stderr: "inherit",
+    });
+    const code = await proc.exited;
+    if (code !== 0) passed = false;
+  }
+  return passed;
+}
+
 // ── Validate ─────────────────────────────────────────────────
+
+async function runValidation(level: CheckLevel, skillsRoot = "skills"): Promise<boolean> {
+  try { await stat(skillsRoot); } catch {
+    console.error(`ERROR: skills directory not found: ${skillsRoot}`);
+    return false;
+  }
+
+  const skills = await listSkills(skillsRoot);
+  if (skills.length === 0) {
+    console.warn(`WARNING: no skill directories in ${skillsRoot}`);
+    return true;
+  }
+
+  let allPassed = true;
+  if (level === "all" || level === "frontmatter") {
+    allPassed = await runSkillsRef(skillsRoot, skills);
+  }
+
+  for (const name of skills) {
+    const r = await validate(join(skillsRoot, name), name, level);
+    if (!printResult(name, r)) allPassed = false;
+  }
+
+  return allPassed;
+}
 
 async function cmdValidate(args: string[]): Promise<void> {
   const { values, positionals } = parseArgs({
@@ -35,24 +80,8 @@ async function cmdValidate(args: string[]): Promise<void> {
   }
 
   const skillsRoot = positionals[0] ?? "skills";
-  try { await stat(skillsRoot); } catch {
-    console.error(`ERROR: skills directory not found: ${skillsRoot}`);
-    process.exit(1);
-  }
-
-  const skills = await listSkills(skillsRoot);
-  if (skills.length === 0) {
-    console.warn(`WARNING: no skill directories in ${skillsRoot}`);
-    process.exit(0);
-  }
-
-  let allPassed = true;
-  for (const name of skills) {
-    const r = await validate(join(skillsRoot, name), name, level as CheckLevel);
-    if (!printResult(name, r)) allPassed = false;
-  }
-
-  process.exit(allPassed ? 0 : 1);
+  const passed = await runValidation(level as CheckLevel, skillsRoot);
+  process.exit(passed ? 0 : 1);
 }
 
 // ── Sync ─────────────────────────────────────────────────────
@@ -76,16 +105,35 @@ async function cmdRollback(_args: string[]): Promise<void> {
 
 // ── Check (all-in-one) ───────────────────────────────────────
 
-async function cmdCheck(args: string[]): Promise<void> {
+export async function runCheck(
+  args: string[],
+  deps: CheckDeps = {
+    runValidation: (level) => runValidation(level),
+    syncSharedSource: () => syncSharedSource(),
+  },
+): Promise<number> {
   const doSync = args.includes("--sync");
+  const blockingLevels: CheckLevel[] = ["frontmatter", "structure", "selfcontained"];
+  let allBlockingPassed = true;
 
-  // validate all — run via cmdValidate with "all" level
-  await cmdValidate(["--check", "all"]);
+  for (const level of blockingLevels) {
+    if (!(await deps.runValidation(level))) allBlockingPassed = false;
+  }
+
+  await deps.runValidation("snapshot");
+
+  if (!allBlockingPassed) return 1;
 
   if (doSync) {
     console.log("\n--- Sync shared-source ---");
-    await syncSharedSource();
+    await deps.syncSharedSource();
   }
+
+  return 0;
+}
+
+async function cmdCheck(args: string[]): Promise<void> {
+  process.exit(await runCheck(args));
 }
 
 // ── Main ─────────────────────────────────────────────────────
@@ -124,4 +172,6 @@ async function main(): Promise<void> {
   }
 }
 
-main();
+if (import.meta.main) {
+  main();
+}

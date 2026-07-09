@@ -201,7 +201,7 @@ flowchart LR
 - `internal/shared-source/` = 开发期单一信源（prompt 片段、共享模板、共享引用）
 - `internal/shared-source/` 的内容来自对 `matharts/standards` 的裁剪摘要以及本仓库沉淀的共享 prompt 片段，**不是**正式标准本身
 - `tools/sync-shared-source.ts` 在打包/发布前把共享内容**单向物理复制**进各 Skill 的 `references/` 与 `assets/`；Skill 侧的本地修改不应反向同步回 `internal/`，如需调整应在 `internal/shared-source/` 修改后重新同步
-- `tools/validate-skill.ts` 强制校验：任何 Skill 不得出现指向 `internal/` 或仓库根的相对路径；分发产物中不存在 `internal/`
+- `tools/cli.ts validate` 强制校验：任何 Skill 不得出现指向 `internal/` 或仓库根的相对路径；分发产物中不存在 `internal/`
 
 > 结论：`internal/shared-source/` 是开发期暂存区，不随 Skill 分发，与 3.3 不冲突。
 
@@ -548,7 +548,7 @@ matharts-skills/
     matharts-doc-rfc/              {SKILL.md, README.md, assets/templates/RFC.template.md}
     matharts-doc-adr/              {SKILL.md, README.md, assets/templates/ADR.template.md}
   docs/guides/SKILL_AUTHORING_GUIDE.md
-  tools/validate-skill.ts
+  tools/cli.ts
 ```
 
 第一阶段先落地核心文件与校验工具，模板资产（`assets/templates/`）可在后续迭代按需补充。不要为形式完整创建大量空目录。
@@ -715,7 +715,7 @@ npx skills remove matharts-doc-rfc
 
 ### 自包含校验仍归 `validate-skill.ts`
 
-`npx skills` 不认识 MathArts 的 `internal/` 约束与 frontmatter `metadata` 中的 MathArts 扩展字段（`extends`/`dependencies`），因此仓库内置 `tools/validate-skill.ts` 负责**仓库内部 QA**（§16 的 L0 frontmatter 校验、L1 结构校验、L2 自包含校验）。该脚本**不是安装器**，也不在项目侧运行，只在仓库发版/CI 时跑。
+`npx skills` 不认识 MathArts 的 `internal/` 约束与 frontmatter `metadata` 中的 MathArts 扩展字段（`extends`/`dependencies`），因此仓库内置 `tools/cli.ts validate` 负责**仓库内部 QA**（§16 的 L0 frontmatter 校验、L1 结构校验、L2 自包含校验）。该脚本**不是安装器**，也不在项目侧运行，只在仓库发版/CI 时跑。
 
 ### `dependencies` / `extends` 是声明性的
 
@@ -862,7 +862,7 @@ stateDiagram-v2
 
 ## 17. Skill 测试策略（新增）
 
-每个 Skill 的 `tests/` 必须可被 `tools/validate-skill.ts` 自动运行。测试分四层：
+每个 Skill 的 `tests/` 必须可被 `tools/cli.ts validate` 自动运行。测试分四层：
 
 | 层级              | 测什么                                                     | 怎么测                                                         |
 | ----------------- | ---------------------------------------------------------- | -------------------------------------------------------------- |
@@ -883,7 +883,7 @@ L3 输出快照测试的 `tests/fixtures/expected/` 目录需要持续维护：
 
 | 场景 | 处理方式 |
 | ---- | -------- |
-| Skill 逻辑变更导致输出变化 | 人工审查新输出是否正确，正确则执行 `validate-skill.ts --check snapshot --update` 更新快照 |
+| Skill 逻辑变更导致输出变化 | 人工审查新输出是否正确，正确则执行 `tools/cli.ts validate --check snapshot --update` 更新快照 |
 | Skill 逻辑变更导致输出错误 | 修复 Skill 逻辑，不更新快照 |
 | 新增测试用例 | 在 `tests/fixtures/` 添加输入文件，执行 `--update` 生成对应 `expected/` 快照 |
 | 快照文件冲突（多人同时更新） | 通过 Git 合并解决，优先保留最新逻辑对应的快照 |
@@ -956,7 +956,7 @@ flowchart TD
 - 没有领域算法 Skill 混入第一批通用 Skill；
 - `matharts-doc-design` 已作为文档排版基础层存在，且 `matharts-doc-readme`/`matharts-doc-rfc`/`matharts-doc-adr` 的 frontmatter `metadata.extends`/`metadata.dependencies` 正确声明对其的依赖；
 - 安装路径走 `npx skills add matharts/skills --skill <name> -a opencode`，至少手工安装一条龙通过；
-- `tools/validate-skill.ts` L0+L1+L2 可在 CI 中运行，且已集成 `skills-ref validate`。
+- `tools/cli.ts validate` L0+L1+L2 可在 CI 中运行，且已集成 `skills-ref validate`。
 
 ## 20. 后续扩展路线
 

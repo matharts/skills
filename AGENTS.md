@@ -45,7 +45,7 @@
 - L1：结构校验（必备文件、行数限制、无 `internal/` 引用）
 - L2：自包含校验（复制到 sandbox 后无路径回溯）
 
-运行：`bun tools/validate-skill.ts --check all`
+运行：`bun tools/cli.ts validate --check all`
 
 ## 文档规范
 

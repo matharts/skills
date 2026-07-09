@@ -18,11 +18,15 @@ export async function checkSnapshot(skillDir: string, skillName: string): Promis
   for (const fixture of await walk(fixturesDir)) {
     if (fixture.includes("expected")) continue;
     const expected = join(expectedDir, relative(fixturesDir, fixture) + ".output");
-    if (await exists(expected)) {
-      const actual = await read(fixture);
-      const want = await read(expected);
-      if (actual !== want) fail(r, `${skillName}: snapshot mismatch for ${relative(fixturesDir, fixture)}`);
+    const rel = relative(fixturesDir, fixture);
+    if (!(await exists(expected))) {
+      fail(r, `${skillName}: missing snapshot for ${rel}`);
+      continue;
     }
+
+    const actual = await read(fixture);
+    const want = await read(expected);
+    if (actual !== want) fail(r, `${skillName}: snapshot mismatch for ${rel}`);
   }
 
   return r;

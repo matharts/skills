@@ -34,7 +34,7 @@ metadata:
    - 正文 <= 500 行
 4. 创建 `README.md`（面向人类说明）
 5. 按需创建 `references/`、`assets/`、`scripts/`、`examples/`、`tests/`
-6. 运行 `bun tools/validate-skill.ts --check all skills/<skill-name>/` 确认通过
+6. 运行 `bun tools/cli.ts validate --check all skills/<skill-name>/` 确认通过
 
 ### 审查 Skill
 
