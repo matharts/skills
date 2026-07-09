@@ -2,9 +2,11 @@
 
 ## Findings
 
-- [P2] The document entry does not explain who should read it.
-  Add a short opening paragraph that names the audience and task.
+- [P1] Missing first-contact clarity
+  The document does not explain what the project is, who should read it, or the safest next step.
+- [P2] Hidden collaboration boundary
+  The contribution path is mentioned indirectly but does not explain when a change needs RFC review.
 
 ## Suggested Shape
 
-Start with purpose, then usage, then maintenance notes.
+Start with positioning, then quick start, documentation paths, contribution rules, and maintenance ownership.
