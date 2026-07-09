@@ -20,6 +20,7 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
     expect(content).toContain("不推荐结构");
     expect(content).toContain("中文技术文档风格");
     expect(content).toContain("协作边界");
+    expect(content).toContain("Quick Start");
   }
 
   expect(skill).toContain("用户说 `review`");
@@ -37,4 +38,9 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
   expect(skill).toContain("影响：<它如何影响读者任务、维护成本或协作流程>");
   expect(skill).toContain("建议：<可执行的修改动作>");
   expect(skill).toContain("当对应下游 Skill 存在时，以其模板字段为准");
+  expect(skill).toContain("示例选择规则");
+  expect(skill).toContain("长 Skill 分层原则");
+  expect(skill).toContain("不推荐输出");
+  expect(skill).toContain("先行为，后理念");
+  expect(skill).toContain("优先读取与当前任务类型最接近的一个示例");
 });

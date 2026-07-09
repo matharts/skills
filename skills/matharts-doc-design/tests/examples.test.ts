@@ -80,3 +80,12 @@ test("markdown examples have balanced fenced code blocks", async () => {
     expect(stack).toEqual([]);
   }
 });
+
+test("Chinese style example explains the rewrite in Chinese", async () => {
+  const content = await readFile(join(skillDir, "examples", "before-after-zh-style.md"), "utf-8");
+
+  expect(content).toContain("## 为什么这样改");
+  expect(content).toContain("去掉");
+  expect(content).toContain("术语");
+  expect(content).not.toContain("## Why This Works");
+});
