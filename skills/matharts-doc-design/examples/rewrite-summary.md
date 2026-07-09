@@ -2,7 +2,7 @@
 
 Use this shape after directly optimizing, rewriting, organizing, or standardizing a document.
 
-```markdown
+````markdown
 已优化：README.md
 
 主要调整：
@@ -10,7 +10,7 @@ Use this shape after directly optimizing, rewriting, organizing, or standardizin
 - Replaced vague headings with concrete open source documentation headings.
 - Moved commands into language-tagged code blocks and grouped repeated commands into a task table.
 - Added `TODO:` markers for missing owner and support-channel facts instead of inventing them.
-```
+````
 
 ## Rewrite Rules
 

@@ -2,7 +2,7 @@
 
 ## Before
 
-```markdown
+````markdown
 # Add sync rollback
 
 We need rollback because sync can overwrite files.
@@ -10,11 +10,11 @@ We need rollback because sync can overwrite files.
 ## Plan
 
 Add backups.
-```
+````
 
 ## After
 
-```markdown
+````markdown
 # RFC-0001: Add Sync Rollback
 
 | Field | Value |
@@ -46,7 +46,7 @@ Create one backup batch per sync operation and store a manifest of touched files
 ## Drawbacks
 
 The backup manifest adds a small amount of toolchain state under `.sync-backup/`.
-```
+````
 
 ## Why This Works
 

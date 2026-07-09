@@ -2,7 +2,7 @@
 
 Use this shape when the user asks for `review`, 审查, 评审, or 检查.
 
-```markdown
+````markdown
 ## Findings
 
 - [P1] Missing first-contact clarity
@@ -22,7 +22,7 @@ Use this shape when the user asks for `review`, 审查, 评审, or 检查.
 4. Documentation Paths
 5. Contributing and Review
 6. License
-```
+````
 
 ## Review Rules
 

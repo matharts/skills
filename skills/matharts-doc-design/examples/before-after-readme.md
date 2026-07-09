@@ -2,7 +2,7 @@
 
 ## Before
 
-```markdown
+````markdown
 # tools
 
 一些内部工具。
@@ -14,11 +14,11 @@ bun install
 ## usage
 
 run scripts in tools folder.
-```
+````
 
 ## After
 
-```markdown
+````markdown
 # MathArts Tools
 
 > Shared Bun utilities for validating, syncing, and maintaining MathArts Skill packages.
@@ -44,7 +44,7 @@ bun tools/cli.ts check
 ## Contributing
 
 Changes to validation behavior require tests and a short note in the relevant plan or design document.
-```
+````
 
 ## Why This Works
 

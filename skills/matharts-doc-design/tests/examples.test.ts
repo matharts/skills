@@ -25,3 +25,23 @@ test("matharts-doc-design ships and references practical examples", async () => 
   expect(skill).toContain("示例层");
   expect(readme).toContain("示例层");
 });
+
+test("markdown examples use outer fences that allow nested code blocks", async () => {
+  const examples = [
+    "before-after-readme.md",
+    "before-after-rfc.md",
+    "review-findings.md",
+    "rewrite-summary.md",
+  ];
+
+  for (const example of examples) {
+    const content = await readFile(join(skillDir, "examples", example), "utf-8");
+    const markdownFenceLines = content
+      .split(/\r?\n/)
+      .filter((line) => line.startsWith("```markdown") || line.startsWith("````markdown"));
+
+    for (const line of markdownFenceLines) {
+      expect(line.startsWith("````markdown")).toBe(true);
+    }
+  }
+});

@@ -16,6 +16,9 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
     expect(content).toContain("Open Source Markdown Style System");
     expect(content).toContain("读者任务路径");
     expect(content).toContain("文档类型指导");
+    expect(content).toContain("推荐章节顺序");
+    expect(content).toContain("不推荐结构");
+    expect(content).toContain("中文技术文档风格");
     expect(content).toContain("协作边界");
   }
 
@@ -27,4 +30,7 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
   expect(skill).toContain("ADR");
   expect(skill).toContain("Guide");
   expect(skill).toContain("AGENTS.md");
+  expect(skill).toContain("只列 actionable findings");
+  expect(skill).toContain("不输出泛泛优点");
+  expect(skill).toContain("下游 Skill 为准");
 });
