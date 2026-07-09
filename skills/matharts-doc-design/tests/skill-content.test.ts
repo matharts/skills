@@ -21,6 +21,7 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
     expect(content).toContain("中文技术文档风格");
     expect(content).toContain("协作边界");
     expect(content).toContain("Quick Start");
+    expect(content).toContain("Advanced Usage");
   }
 
   expect(skill).toContain("用户说 `review`");
@@ -43,11 +44,17 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
   expect(skill).toContain("不推荐输出");
   expect(skill).toContain("先行为，后理念");
   expect(skill).toContain("优先读取与当前任务类型最接近的一个示例");
+  expect(skill).toContain("何时不用");
+  expect(skill).toContain("需要 README 内容完整性时，用 `matharts-doc-readme`");
+  expect(skill).toContain("需要 RFC 字段合同时，用 `matharts-doc-rfc`");
+  expect(skill).toContain("只问事实内容时，不使用本 Skill");
 });
 
 test("matharts-doc-design keeps execution sections in reader-task order", async () => {
   const skill = await readFile(join(skillDir, "SKILL.md"), "utf-8");
   const sections = [
+    "## 何时使用",
+    "## 何时不用",
     "## 工作模式",
     "## 审查模式",
     "## 改写模式",

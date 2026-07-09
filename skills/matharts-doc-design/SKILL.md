@@ -22,6 +22,20 @@ MathArts 文档设计诊断与改写基准层。它负责文档的结构、视�
 - 需要统一标题、表格、代码块、提示块、Mermaid 图示、中英文混排
 - 需要给 README、RFC、ADR、指南、计划、`AGENTS.md` 提供通用文档设计基线
 
+## 何时不用
+
+- 需要 README 内容完整性时，用 `matharts-doc-readme`
+- 需要 RFC 字段合同时，用 `matharts-doc-rfc`
+- 需要 ADR 状态流转或决策记录合同时，用 `matharts-doc-adr`
+- 只问事实内容时，不使用本 Skill
+- 通用风格建议与下游 Skill 冲突时，以下游 Skill 为准
+
+## Advanced Usage
+
+- 示例选择：优先读取与当前任务类型最接近的一个示例
+- 长 Skill 分层：超过 250 行时先行为、后理念，高频规则靠前
+- 下游优先：README/RFC/ADR 的内容合同由对应下游 Skill 定义
+
 ## 工作模式
 
 先判断用户意图，再选择审查模式或改写模式。
