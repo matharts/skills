@@ -47,3 +47,20 @@ test("check does not sync after blocking validation fails", async () => {
   expect(exitCode).toBe(1);
   expect(synced).toBe(false);
 });
+
+test("check prints stage headings", async () => {
+  const logs: string[] = [];
+
+  await runCheck([], {
+    runValidation: async () => true,
+    syncSharedSource: async () => {},
+    log: (message) => logs.push(message),
+  });
+
+  expect(logs).toEqual([
+    "\n--- L0: frontmatter ---",
+    "\n--- L1: structure ---",
+    "\n--- L2: self-contained ---",
+    "\n--- L3: snapshot (warning-only) ---",
+  ]);
+});

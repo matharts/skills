@@ -22,6 +22,7 @@ import { syncSharedSource, rollbackSync } from "./lib/sync";
 interface CheckDeps {
   runValidation: (level: CheckLevel) => Promise<boolean>;
   syncSharedSource: () => Promise<void>;
+  log: (message: string) => void;
 }
 
 async function runSkillsRef(skillsRoot: string, skills: string[]): Promise<boolean> {
@@ -107,26 +108,35 @@ async function cmdRollback(_args: string[]): Promise<void> {
 
 export async function runCheck(
   args: string[],
-  deps: CheckDeps = {
+  deps: Partial<CheckDeps> = {},
+): Promise<number> {
+  const resolvedDeps: CheckDeps = {
     runValidation: (level) => runValidation(level),
     syncSharedSource: () => syncSharedSource(),
-  },
-): Promise<number> {
+    log: (message) => console.log(message),
+    ...deps,
+  };
   const doSync = args.includes("--sync");
-  const blockingLevels: CheckLevel[] = ["frontmatter", "structure", "selfcontained"];
+  const blockingLevels: Array<{ level: CheckLevel; heading: string }> = [
+    { level: "frontmatter", heading: "L0: frontmatter" },
+    { level: "structure", heading: "L1: structure" },
+    { level: "selfcontained", heading: "L2: self-contained" },
+  ];
   let allBlockingPassed = true;
 
-  for (const level of blockingLevels) {
-    if (!(await deps.runValidation(level))) allBlockingPassed = false;
+  for (const { level, heading } of blockingLevels) {
+    resolvedDeps.log(`\n--- ${heading} ---`);
+    if (!(await resolvedDeps.runValidation(level))) allBlockingPassed = false;
   }
 
-  await deps.runValidation("snapshot");
+  resolvedDeps.log("\n--- L3: snapshot (warning-only) ---");
+  await resolvedDeps.runValidation("snapshot");
 
   if (!allBlockingPassed) return 1;
 
   if (doSync) {
     console.log("\n--- Sync shared-source ---");
-    await deps.syncSharedSource();
+    await resolvedDeps.syncSharedSource();
   }
 
   return 0;
