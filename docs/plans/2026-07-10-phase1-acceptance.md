@@ -39,6 +39,6 @@ Results:
 
 ## Follow-Up Items
 
-- Add L3 fixtures for `matharts-agent-skill-dev`, `matharts-doc-design`, `matharts-agent-guide`, and `matharts-repo-bootstrap` when their output contracts are stable.
+- Add L3 fixtures for `matharts-agent-skill-dev`, `matharts-agent-guide`, and `matharts-repo-bootstrap` when their output contracts are stable.
 - Add `--update` support for snapshot maintenance if snapshot fixtures become a primary review artifact.
 - Perform a manual `npx skills add matharts/skills --skill <name> -a opencode` installation check after the repository is pushed to GitHub.

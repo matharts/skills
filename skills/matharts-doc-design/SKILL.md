@@ -1,27 +1,99 @@
 ---
 name: matharts-doc-design
-description: Standardize MathArts document typography, Markdown styling, visual hierarchy, and reading experience. Use when formatting documents, setting heading levels, styling tables, code blocks, blockquotes, badges, NOTE/WARNING/IMPORTANT blocks, Mermaid diagrams, CJK-Latin mixed typesetting, or document status indicators. Triggers on document formatting, typography, visual hierarchy, markdown styling, document layout, CJK typesetting.
+description: Use when reviewing, optimizing, rewriting, standardizing, formatting, or improving MathArts documents, including README, RFC, ADR, guides, AGENTS.md, Markdown structure, visual hierarchy, CJK-Latin spacing, tables, code blocks, callouts, Mermaid diagrams, document status metadata, and documentation reading experience.
 license: MIT
 compatibility: Designed for opencode and codex
 metadata:
   version: "0.1.0"
   status: "experimental"
   category: "documentation"
-  tags: "typography,markdown,formatting,visual-hierarchy,document-design"
+  tags: "typography,markdown,formatting,visual-hierarchy,document-design,review,rewrite"
   maintainers: "@matharts/core"
 ---
 
 # matharts-doc-design
 
-统一 MathArts 文档排版、Markdown 样式、视觉层级与阅读体验。只负责"长相"，不负责具体文档内容。
+MathArts 文档设计诊断与改写基准层。它负责文档的结构、视觉层级、排版一致性和阅读体验；不负责虚构事实、替用户做业务结论，或替代 README/RFC/ADR 等具体文档 Skill 的内容规则。
 
 ## 何时使用
 
-- 需要统一文档排版风格
-- 需要确定标题层级、编号规则
-- 需要规范表格/代码块/引用块样式
-- 需要处理中英文混排
-- 需要添加文档状态标识
+- 需要审查文档结构、排版、信息密度或阅读体验
+- 需要优化、改写、整理、标准化、润色 Markdown 文档
+- 需要统一标题、表格、代码块、提示块、Mermaid 图示、中英文混排
+- 需要给 README、RFC、ADR、指南、计划、`AGENTS.md` 提供通用文档设计基线
+
+## 工作模式
+
+先判断用户意图，再选择审查模式或改写模式。
+
+| 用户表达 | 模式 | 行为 |
+| -------- | ---- | ---- |
+| 用户说 `review`、审查、评审、检查 | 审查模式 | 只输出问题清单、风险和修改建议，不直接改文件 |
+| 用户说优化、改写、整理、标准化、美化 | 改写模式 | 直接编辑文档，并在最后给简短变更说明 |
+| 用户意图不清楚 | 审查模式 | 先给建议，避免贸然改原文 |
+
+## 审查模式
+
+以问题优先，按影响排序。重点指出会影响理解、维护、安装、评审或下游执行的问题。
+
+输出格式：
+
+```markdown
+## Findings
+
+- [P1] <问题标题>
+  <为什么这是问题，以及建议怎么改。>
+- [P2] <问题标题>
+  <为什么这是问题，以及建议怎么改。>
+
+## Suggested Shape
+
+<建议的文档结构或关键段落顺序。>
+```
+
+严重度定义：
+
+| 等级 | 含义 |
+| ---- | ---- |
+| P1 | 会误导读者、破坏流程、造成安装/执行风险 |
+| P2 | 明显降低可读性、可维护性或审查效率 |
+| P3 | 风格一致性、措辞、局部排版问题 |
+
+## 改写模式
+
+直接修改目标文档，但保持事实和技术含义不变。优先重排结构，再润色句子，最后统一排版。
+
+改写原则：
+
+- 不改变事实、技术约束、接口语义或决策结论
+- 不凭空补业务背景、状态、负责人、日期或版本
+- 保留用户已有术语；只统一明显不一致的写法
+- 对不确定内容使用 `TODO:` 或在结果中提出问题
+- 不把短文档过度复杂化；能用清晰段落解决时不强行加表格
+- 不把所有内容都整理成三段式；让结构服务内容，而不是反过来
+
+完成后简短说明：
+
+```markdown
+已优化：<文件>
+
+主要调整：
+- <结构或层级调整>
+- <排版或可读性调整>
+```
+
+## 诊断维度
+
+| 维度 | 检查点 |
+| ---- | ------ |
+| 文档入口 | 开头是否快速说明这是什么、给谁用、怎么开始 |
+| 信息架构 | 章节顺序是否符合读者任务路径，标题是否连续 |
+| 视觉层级 | 标题、表格、列表、代码块是否形成可扫描结构 |
+| 信息密度 | 长段是否可拆分，列表是否过长，是否需要分组 |
+| 可信边界 | 是否混入未经确认的事实、状态、版本或承诺 |
+| 执行可用性 | 命令、路径、模板、示例是否能被直接复制或跟随 |
+| 维护性 | 是否有重复规则、过期入口、矛盾描述或悬空引用 |
+| 排版一致性 | 中英文混排、标点、表格、代码块、提示块是否统一 |
 
 ## 排版规则
 
@@ -29,11 +101,12 @@ metadata:
 
 - 一级标题 `#` 仅用于文档标题，每文档仅一个
 - 标题层级不跳级（`##` → `###`，不 `##` → `####`）
-- 章节编号格式：`## N. 标题` 或 `## N.M 标题`
+- 章节编号只在长文档或规范文档中使用；短 README 不强制编号
+- 标题描述读者任务或内容主题，避免只写“其他”“说明”“补充”
 
 ### 元信息区
 
-文档标题下方紧跟元信息表格：
+规范、计划、RFC、ADR 类文档在标题下方使用元信息表格。普通 README 不强制。
 
 ```markdown
 | 属性     | 值                    |
@@ -45,19 +118,21 @@ metadata:
 ### 中英文混排
 
 - 中文与英文/数字之间加一个半角空格
-- 专有名词保持原文大小写（如 `AGENTS.md`、`SKILL.md`）
-- 中文标点使用全角，英文标点使用半角
+- 专有名词保持原文大小写，如 `AGENTS.md`、`SKILL.md`、`README.md`
+- 中文标点使用全角，英文命令、路径、代码中的标点保持原样
 
 ### 表格
 
 - 表头与分隔行必须对齐
 - 单元格内容前后各留一个空格
-- 空单元格使用 `—`（em dash）占位
+- 空单元格使用 `—` 占位
+- 表格用于比较、元信息、矩阵和清单；不要用表格包裹普通段落
 
 ### 代码块
 
-- 必须标注语言（如 ` ```python `、` ```markdown `）
-- 行内代码使用反引号
+- 必须标注语言，如 `bash`、`markdown`、`typescript`
+- 行内命令、路径、字段名使用反引号
+- 命令示例应尽量可复制；需要占位时使用清晰的 `<placeholder>`
 
 ### 引用块与提示
 
@@ -72,12 +147,14 @@ metadata:
 - 图表前后各空一行
 - 使用 ` ```mermaid ` 代码块
 - 节点文本使用双引号包裹
+- 只在流程或关系比文字更清楚时使用图示
 
 ### 段落密度
 
 - 段落之间空一行
-- 列表项之间视复杂度决定是否空行
-- 长文档每 50-80 行设置一个二级标题
+- 一个段落通常表达一个观点
+- 列表项超过 7 项时优先分组或改成表格
+- 长文档每 50-80 行设置一个二级标题或拆分章节
 
 ### 文档状态标识
 
@@ -89,4 +166,4 @@ metadata:
 
 ## 与其他 Skill 的关系
 
-本 Skill 作为基础风格层被 `matharts-doc-readme`/`matharts-doc-rfc`/`matharts-doc-adr` 等消费。消费方通过 `metadata.extends` 继承其规则并覆盖。
+本 Skill 是基础风格层，被 `matharts-doc-readme`、`matharts-doc-rfc`、`matharts-doc-adr` 等消费。消费方通过 `metadata.extends` 继承通用文档设计规则，并补充各自的内容结构、字段和流程要求。
