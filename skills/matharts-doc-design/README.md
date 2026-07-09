@@ -48,6 +48,17 @@ MathArts 文档设计诊断与改写基准层。它统一结构、视觉层级�
 
 流程性文档必须说明谁维护、如何评审、何时升级到 RFC、哪些内容不属于当前文档范围。
 
+## 示例层
+
+需要更具体的写法时读取这些示例：
+
+| 示例 | 用途 |
+| ---- | ---- |
+| `examples/before-after-readme.md` | README 入口、快速开始、常见任务重排 |
+| `examples/before-after-rfc.md` | RFC 从简短想法升级为可评审提案 |
+| `examples/review-findings.md` | 审查模式输出 findings 和 suggested shape |
+| `examples/rewrite-summary.md` | 改写模式完成后的简短总结 |
+
 ## 改写原则
 
 - 不改变事实和技术含义

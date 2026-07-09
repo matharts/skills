@@ -152,6 +152,17 @@ MathArts 文档设计诊断与改写基准层。它负责文档的结构、视�
 - 长列表优先分组，只有能提升扫描效率时才改成表格
 - 保持短文档短，不把轻量说明扩成治理文档
 
+## 示例层
+
+当规则不够具体时，按需读取 `examples/` 中的示例，不要把示例全文复制进目标文档。
+
+| 场景 | 示例 |
+| ---- | ---- |
+| README 入口、快速开始、常见任务重排 | `examples/before-after-readme.md` |
+| RFC 从简短想法升级为可评审提案 | `examples/before-after-rfc.md` |
+| 审查模式输出 findings 和 suggested shape | `examples/review-findings.md` |
+| 改写模式完成后的简短总结 | `examples/rewrite-summary.md` |
+
 ## 排版规则
 
 ### 标题层级
