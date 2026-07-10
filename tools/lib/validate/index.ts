@@ -8,7 +8,6 @@ import type { CheckResult, CheckLevel } from "../types";
 import { checkFrontmatter } from "./frontmatter";
 import { checkStructure } from "./structure";
 import { checkSelfcontained } from "./self-contained";
-import { checkSnapshot } from "./snapshot";
 
 export async function validate(
   skillDir: string,
@@ -36,12 +35,5 @@ export async function validate(
     r.warnings.push(...sub.warnings);
     if (!sub.passed) r.passed = false;
   }
-  if (run("snapshot")) {
-    const sub = await checkSnapshot(skillDir, skillName);
-    r.errors.push(...sub.errors);
-    r.warnings.push(...sub.warnings);
-    if (!sub.passed) r.passed = false;
-  }
-
   return r;
 }

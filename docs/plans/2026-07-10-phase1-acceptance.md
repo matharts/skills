@@ -16,7 +16,7 @@ Results:
 - L0 frontmatter: pass, including official `skills-ref`
 - L1 structure: pass
 - L2 self-contained: pass
-- L3 snapshot: pass for `matharts-doc-readme`, `matharts-doc-rfc`, and `matharts-doc-adr`; warning-only skip for Skills without fixtures
+- L3: Deferred by RFC-001 because no Agent runner is configured
 
 ## Acceptance Checklist
 
@@ -35,10 +35,9 @@ Results:
 - [x] `matharts-doc-design` exists as the base documentation style layer
 - [x] README/RFC/ADR Skills declare `metadata.extends` and `metadata.dependencies` for `matharts-doc-design`
 - [x] `tools/cli.ts validate` runs in CI and invokes official `skills-ref`
-- [x] Minimal snapshot fixtures exist for README/RFC/ADR document Skills
+- [x] L3 CLI compatibility is preserved while behavior validation is explicitly deferred
 
 ## Follow-Up Items
 
-- Add L3 fixtures for `matharts-agent-skill-dev`, `matharts-agent-guide`, and `matharts-repo-bootstrap` when their output contracts are stable.
-- Add `--update` support for snapshot maintenance if snapshot fixtures become a primary review artifact.
+- Design a real L3 Agent runner in a separate RFC when strict output validation becomes necessary.
 - Perform a manual `npx skills add matharts/skills --skill <name> -a opencode` installation check after the repository is pushed to GitHub.

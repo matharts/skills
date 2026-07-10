@@ -25,6 +25,8 @@ interface CheckDeps {
   log: (message: string) => void;
 }
 
+const L3_DEFERRED = "L3 deferred: no Agent runner configured; Skill behavior was not tested";
+
 async function runSkillsRef(skillsRoot: string, skills: string[]): Promise<boolean> {
   if (process.env.MATHARTS_SKIP_SKILLS_REF === "1") return true;
 
@@ -42,7 +44,12 @@ async function runSkillsRef(skillsRoot: string, skills: string[]): Promise<boole
 
 // ── Validate ─────────────────────────────────────────────────
 
-async function runValidation(level: CheckLevel, skillsRoot = "skills"): Promise<boolean> {
+export async function runValidation(level: CheckLevel, skillsRoot = "skills"): Promise<boolean> {
+  if (level === "snapshot") {
+    console.warn(L3_DEFERRED);
+    return true;
+  }
+
   try { await stat(skillsRoot); } catch {
     console.error(`ERROR: skills directory not found: ${skillsRoot}`);
     return false;
@@ -63,6 +70,8 @@ async function runValidation(level: CheckLevel, skillsRoot = "skills"): Promise<
     const r = await validate(join(skillsRoot, name), name, level);
     if (!printResult(name, r)) allPassed = false;
   }
+
+  if (level === "all") console.warn(L3_DEFERRED);
 
   return allPassed;
 }
@@ -129,7 +138,7 @@ export async function runCheck(
     if (!(await resolvedDeps.runValidation(level))) allBlockingPassed = false;
   }
 
-  resolvedDeps.log("\n--- L3: snapshot (warning-only) ---");
+  resolvedDeps.log("\n--- L3: deferred ---");
   await resolvedDeps.runValidation("snapshot");
 
   if (!allBlockingPassed) return 1;
@@ -156,7 +165,7 @@ Usage:
   bun tools/cli.ts check [--sync]
 
 Commands:
-  validate   Run L0-L3 validation checks (default: all)
+  validate   Run L0-L2 validation and report deferred L3 (default: all)
   sync       Sync internal/shared-source/ → skills/*/
   rollback   Rollback last sync
   check      validate all + optional sync

@@ -46,7 +46,7 @@ metadata:
 - [ ] 无 `skill.json` 或 `VERSION` 文件
 - [ ] 分发态自包含，无 `internal/` 引用
 - [ ] 无跨 Skill 相对路径回溯
-- [ ] `tests/fixtures/` 包含 valid/invalid 样本
+- [ ] 规则由单元测试覆盖；复杂行为保留场景、rubric 和期望输出
 
 ### 判断边界
 
