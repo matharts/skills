@@ -5,13 +5,13 @@ Use this example when a MathArts document sounds slogan-like, translated, or uns
 ## Before
 
 ````markdown
-# 强大的 Agent 能力平台
+# 强大的 MathArts Skill Registry
 
-这个平台被设计用于使得开发者能够非常优雅地进行各种各样的 Skill 创建工作。它拥有极致灵活的能力体系，可以帮助用户丝滑地完成技能、能力包、模块的开发。
+MathArts Skill Registry 用于维护可分发的 Agent Skill。维护者可以在这里创建、校验和发布 Skill 包。它拥有强大、优雅、丝滑的能力体系。
 
 ## 能力说明
 
-用户可以通过这个功能模块去创建一个能力，并且这个能力会被用于后续的智能体工作流当中。
+当你需要新增或修改 Skill 时，先确认目标 Skill 的目录、`SKILL.md` frontmatter 和测试夹具。新增 Skill 要创建独立目录，并让 `name` 与目录名一致；校验 Skill 要运行 `bun tools/cli.ts check`；修改共享规则要先写 RFC。
 ````
 
 ## After

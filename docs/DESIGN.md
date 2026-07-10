@@ -1,15 +1,25 @@
-# MathArts Skills Repository Design
+# MathArts Skills 仓库设计
 
-> `matharts/skills` 仓库设计文档。
+本文档定义 `matharts/skills` 的仓库边界、Skill 包规范、分发机制和实施顺序，供维护者在设计、实现和评审变更时查阅。
 
 | 属性        | 值                                   |
 | ----------- | ------------------------------------ |
 | 文档状态    | Draft                                |
-| 版本        | 0.6.4                                |
-| 评审目标    | 严格对齐 agentskills.io 规范         |
-| 上次评审   | 第六轮评审 — 可维护性与实施成本优化 |
+| 版本        | 0.6.5                                |
+| 评审目标    | 对齐 agentskills.io 规范             |
+| 上次评审    | RFC-001：暂停占位式 L3 校验          |
 
-## Changelog
+## 如何使用本文档
+
+- 规划第一阶段工作时，先阅读“实施范围”，再按“第一阶段实施顺序”和“第一阶段验收标准”执行
+- 新增或修改 Skill 时，重点查看“设计原则”“单个 Skill 的标准结构”和“`SKILL.md` frontmatter 设计”
+- 评审兼容性、状态或发布流程时，查看“Skill 状态”“Skill 版本规则”和“Skill 测试策略”
+- 追溯设计理由时，查看文末的“设计决策记录”
+
+## 变更记录
+
+<details>
+<summary>查看 0.1.0 至 0.6.5 的变更</summary>
 
 | 版本   | 日期         | 变更                                                                                              |
 | ------ | ------------ | ------------------------------------------------------------------------------------------------- |
@@ -27,18 +37,21 @@
 | 0.6.2  | 第五轮评审修复 | 🔴 更新"上次评审"字段至第五轮；§11 统一使用"agentskills.io 规范"术语；§11 依赖声明补充多语言支持（`package.json`）；§13 明确验证责任人为"仓库维护者"；§5 修正交叉引用描述；§6.2 简化 frontmatter 引用说明；§6.4 明确拓扑排序语义；§9 路径过滤补充 GitHub Actions 语法；§12 字段命名规范澄清历史遗留字段；§17 依赖图消除重复箭头；§19 Phase 5 前置条件具体化 |
 | 0.6.3  | 第六轮评审优化 | 新增"实施优先级指南"章节，标记各章节实施优先级（必需/可选）；§14.1 废弃流程标记为"第二阶段可选"；§15 预发布版本标记为"第二阶段可选"；§16 L3 测试标记为"第二阶段可选"；§12 扩展治理标记为"第二阶段可选"；§13 离线安装方案 2-3 标记为"第二阶段可选"；§9 release.yml 标记为"第二阶段可选"；§3.4.1 同步失败处理标记为"第二阶段可选"；§11 安全规范标记为"第二阶段可选"；§22 响应时间标记为"第二阶段可选"；§23 ADR-003-005 标记为"参考文档"；§19 Phase 2-5 标记为"待规划" |
 | 0.6.4  | 目录结构调整 | RFC 和 ADR 文档存储位置从 `rfcs/` 和 `adr/` 调整为 `docs/rfcs/` 和 `docs/adr/`，统一归入 docs 目录 |
+| 0.6.5  | L3 状态修正 | 根据 RFC-001 暂停未执行 Skill 的占位式 L3；保留 CLI 参数和人工前向测试资产，等待真实 Agent runner |
+
+</details>
 
 ## 1. 仓库定位
 
-`matharts/skills` 是 MathArts 开源生态的 **Agent Capability Registry**。
+`matharts/skills` 是 MathArts 开源生态的 Agent Capability Registry。
 
-它既不是普通文档仓库，也不是单纯的模板仓库，而是 MathArts 面向 AI Agent 的可复用能力仓库。本仓库用于沉淀、维护、分发 MathArts 各项目共享的 Agent Skills 与能力模块，使 AI Agent 能够在不同 MathArts 仓库中稳定执行高质量任务。
+本仓库沉淀、维护和分发 MathArts 项目共享的 Agent Skill。它关注 Agent 可执行的能力包，不承担普通文档库或模板库的职责。
 
-核心要解决的问题不是"人如何看文档"，而是：
+本文档围绕一个核心问题展开：
 
 > Agent 如何在不同 MathArts 仓库中稳定执行高质量任务？
 
-例如：创建和维护 Skill、初始化 MathArts 仓库、生成仓库级 `AGENTS.md`、生成项目 `README.md`、统一文档排版设计、生成和审查 RFC、生成和审查 ADR，未来扩展到架构审查、API 文档、发布流程、PR 审查等能力。
+首批能力覆盖 Skill 维护、仓库初始化、`AGENTS.md` 与 `README.md` 生成、文档设计，以及 RFC 和 ADR 的生成与审查。后续能力可扩展到架构审查、API 文档、发布流程和 PR 审查。
 
 GitHub 仓库描述（EN）：
 
@@ -73,13 +86,13 @@ flowchart LR
   Docs -.->|可选引用| Skills
 ```
 
-- `matharts/standards` = 正式标准源头
-- `matharts/skills` = Agent 执行层（本仓库），每 Skill 内的 `references/*.snapshot.md` 是执行所需的标准摘要/快照
-- 项目仓库 = 安装已选 Skill 副本后即可运行
+- **`matharts/standards`**：正式标准源头
+- **`matharts/skills`**：Agent 执行层；每个 Skill 内的 `references/*.snapshot.md` 保存执行所需的标准摘要或快照
+- **项目仓库**：安装所选 Skill 的副本，并在本地执行
 
-## 3. 实施优先级指南
+## 实施范围
 
-本文档包含完整的仓库设计规范，但并非所有内容都需要在第一阶段实施。为降低实施成本，各章节按优先级分为三级：
+本文档覆盖完整的仓库设计，但第一阶段只实施维持仓库运行所需的内容。其余内容按实施时机分为三级：
 
 | 优先级 | 标记 | 含义 | 实施建议 |
 | ------ | ---- | ---- | -------- |
@@ -129,15 +142,13 @@ flowchart LR
 | §19（Phase 2-5） | 后续扩展路线 | 长期规划，具体实施时间待定 |
 | §23（ADR-003-005） | 设计决策记录 | 了解设计背景，无需实施 |
 
-### 实施建议
+### 执行顺序
 
-1. **第一阶段**：仅实施 🟢 标记的内容，预计工作量 2-4 周
+1. **第一阶段**：仅实施 🟢 标记的内容
 2. **第二阶段**：根据实际需求选择性实施 🟡 标记的内容
 3. **长期维护**：⚪ 标记的内容仅供了解设计背景，无需实施
 
----
-
-## 4. 设计原则
+## 3. 设计原则
 
 ### 3.1 直接使用 `skills/`，不用 `packages/`
 
@@ -277,7 +288,7 @@ Agent 按 [agentskills 规范](https://agentskills.io/specification#progressive-
 
 `validate-skill.ts` 将此项作为 **L0 硬错误**检查。
 
-## 5. 仓库职责边界
+## 4. 仓库职责边界
 
 ### 4.1 本仓库负责
 
@@ -287,7 +298,7 @@ Agent Skills、Skill 能力包、执行规则、参考摘要、模板资产、�
 
 MathArts 正式文档/工程/治理标准（→ `matharts/standards`）、组织级贡献规范（→ `matharts/.github`）、长期知识库（→ `matharts/docs`）、领域算法/术语/模型规则（→ 各领域仓库 `.agents/skills/`）。
 
-## 6. 第一批 Skill（定义一次，后续引用）
+## 5. 第一批 Skill
 
 第一批围绕 **MathArts 早期组织建设的最小闭环**，定为 7 个。本节为唯一定义点，§10（最小结构）和 §19（扩展路线）引用本节，不再重复列清单。
 
@@ -313,7 +324,7 @@ flowchart TD
   F -->|Accepted| G["matharts-doc-adr<br/>记录最终决策"]
 ```
 
-## 7. 第一批 Skill 职责说明
+## 6. 第一批 Skill 职责说明
 
 ### 6.1 `matharts-agent-skill-dev`
 
@@ -430,7 +441,7 @@ stateDiagram-v2
 2. 实施完成后 ADR 可补充实施记录与影响后果。
 3. 后续被新决策替代时，旧 ADR 状态置为 `Superseded`，并在新 ADR 中 `supersedes` 字段引用旧 ADR。
 
-## 8. 暂不放入第一批的 Skill
+## 7. 暂不放入第一批的 Skill
 
 有价值但不建议第一批就做：`matharts-spec`、`matharts-architecture-doc`、`matharts-api-doc`、`matharts-release`、`matharts-pr-review`、`matharts-issue-triage`、`matharts-contributing`、`matharts-code-review`、`matharts-algorithm-doc`。
 
@@ -442,13 +453,13 @@ stateDiagram-v2
 - `code-review` 需先明确工程规范；
 - `algorithm-doc` 应下沉到领域仓库。
 
-## 9. 领域 Skill 下沉规则
+## 8. 领域 Skill 下沉规则
 
 应放在具体领域仓库而非 `matharts/skills` 的类型：算法文档、领域模型、术语解释、领域架构、领域测试、领域数据格式。
 
 判断规则同 §3.6。
 
-## 10. 推荐仓库结构
+## 9. 推荐仓库结构
 
 完整推荐结构（`internal/` 仅为开发期，不进入分发；详见 §3.4）：
 
@@ -486,7 +497,6 @@ matharts-skills/
         frontmatter.ts           # L0: frontmatter 合规
         structure.ts             # L1: 结构完整
         self-contained.ts        # L2: 自包含
-        snapshot.ts              # L3: 快照对比
     package-skill.ts
   integrations/                 # 与外部工具/平台的集成配置（如 CI/CD、Agent 运行时适配）
     codex/
@@ -506,7 +516,7 @@ matharts-skills/
 
 | 阶段 | 步骤 | 失败行为 |
 | ---- | ---- | -------- |
-| 全量校验 | `bun tools/cli.ts check`（含 L0-L3） | L0-L2 阻断；L3 警告 |
+| 全量校验 | `bun tools/cli.ts check` | L0-L2 阻断；L3 明确跳过 |
 
 触发条件：`on: [push, pull_request]`，路径过滤 `paths: ['skills/**', 'tools/**']`。
 
@@ -514,7 +524,7 @@ matharts-skills/
 
 | 阶段 | 步骤 | 说明 |
 | ---- | ---- | ---- |
-| 全量校验 | L0 + L1 + L2 + L3 | 确保发布产物全部通过 |
+| 全量校验 | L0 + L1 + L2 | 确保发布产物通过当前自动校验 |
 | 同步共享源 | `bun tools/sync-shared-source.ts` | 将 `internal/shared-source/` 同步进各 Skill |
 | 打包 | `bun tools/package-skill.ts` | 生成各 Skill 的分发包（tar.gz） |
 | 发布 | 创建 GitHub Release，附带分发包 | tag 格式 `v<major>.<minor>.<patch>` |
@@ -532,7 +542,7 @@ matharts-skills/
 
 所有指南由 `matharts-agent-skill-dev` Skill 负责维护，确保与实际规范同步。
 
-## 11. 第一阶段最小结构
+## 10. 第一阶段最小结构
 
 第一阶段不一次性创建所有目录。最小结构（引用 §5 的 7 个 Skill，名字不在此重复）：
 
@@ -553,7 +563,7 @@ matharts-skills/
 
 第一阶段先落地核心文件与校验工具，模板资产（`assets/templates/`）可在后续迭代按需补充。不要为形式完整创建大量空目录。
 
-## 12. 单个 Skill 的标准结构
+## 11. 单个 Skill 的标准结构
 
 agentskills.io 规范定义的标准目录为 `scripts/`、`references/`、`assets/`。MathArts 在此基础上增加非规范的 `examples/`、`tests/`。
 
@@ -591,7 +601,7 @@ skills/<skill-name>/
 
 **审查流程**：包含 `scripts/` 的 Skill 在 PR 审查时，必须由 maintainer 人工审查脚本内容，确认无安全隐患后方可合并。CI 阶段的 L1 结构校验仅检查文件存在性，不审查脚本内容。
 
-## 13. `SKILL.md` frontmatter 设计
+## 12. `SKILL.md` frontmatter 设计
 
 agentskills 规范规定，`SKILL.md` 是 Skill 的唯一标准文件，元数据通过 YAML frontmatter 承载。
 
@@ -681,7 +691,7 @@ MathArts 扩展字段（`metadata.*`）的变更遵循以下治理规则：
 
 **扩展注册表**：所有 MathArts 扩展字段必须在本文档 §12 "MathArts 扩展" 表格中注册，未注册字段将被 `validate-skill.ts` 警告（不阻断）。
 
-## 14. Skill 安装机制与版本锁定
+## 13. Skill 安装机制与版本锁定
 
 ### 统一使用 `npx skills`（vercel-labs/skills）
 
@@ -765,7 +775,7 @@ tar -xzf matharts-doc-rfc-0.1.0.tar.gz -C .agents/skills/
 
 离线安装后，项目仓库仍需将 `.agents/skills/` 副本 commit 进版本库，确保团队一致性。
 
-## 15. Skill 状态（含转换条件）
+## 14. Skill 状态与转换条件
 
 ### 状态值
 
@@ -820,7 +830,7 @@ stateDiagram-v2
 - `matharts-agent-guide` 在生成 `AGENTS.md` 时，自动过滤 deprecated Skill，推荐使用 replacement
 - 项目仓库的 `validate-skill.ts` 在 L0 校验时，警告对 deprecated Skill 的依赖
 
-## 16. Skill 版本规则
+## 15. Skill 版本规则
 
 每个 Skill 独立版本化，使用语义化版本。
 
@@ -830,7 +840,7 @@ stateDiagram-v2
 | minor   | 增加模板、规则、示例或脚本能力  |
 | major   | 改变工作流、兼容性或核心输出结构 |
 
-### 向后兼容与迁移策略（新增）
+### 向后兼容与迁移策略
 
 - **minor** 必须保持向后兼容；已安装项目无需迁移即可继续工作。
 - 处于 `experimental` 状态的 Skill 不受此约束：其结构和规则可能在 minor 版本中变化，进入 `active` 状态后才开始执行 minor 向后兼容承诺。
@@ -860,43 +870,28 @@ stateDiagram-v2
   - `experimental`：功能方向未定，可能大幅重构
   - `prerelease`：功能已定，仅修复 bug 和微调
 
-## 17. Skill 测试策略（新增）
+## 16. Skill 测试策略
 
-每个 Skill 的 `tests/` 必须可被 `tools/cli.ts validate` 自动运行。测试分四层：
+测试分四层；当前自动运行 L0-L2，L3 按 RFC-001 暂停：
 
 | 层级              | 测什么                                                     | 怎么测                                                         |
 | ----------------- | ---------------------------------------------------------- | -------------------------------------------------------------- |
 | frontmatter 校验 (L0) | `name` 匹配目录名、`description` ≤ 1024 字符且含触发词、`metadata` 值全为 string、规范字段合法 | 调用官方 [`skills-ref validate`](https://github.com/agentskills/agentskills/tree/main/skills-ref) + MathArts 自定义检查 |
 | 结构校验 (L1)     | 必备文件齐（至少 `SKILL.md`/`README.md`）、无 `internal/` 引用、`SKILL.md` ≤ 500 行 | `cli.ts validate --check structure`                          |
 | 自包含校验 (L2)   | Skill 复制到临时目录后仍可被 Agent 读取，无相对路径回溯     | `cli.ts validate --check selfcontained`（复制到 sandbox 后扫描所有引用路径） |
-| 输出快照 (L3)     | 对 `examples/` 与 `tests/fixtures/` 用例运行 Skill，输出与 `tests/fixtures/expected/` 快照对比 | `cli.ts validate --check snapshot`（差异即失败，可显式更新快照） |
+| 输出快照 (L3)     | 运行 Skill 并比较输出 | Deferred；`cli.ts validate --check snapshot` 只提示未配置 Agent runner |
 
-`validate-skill.ts` 实现为**分层执行**：先调 `skills-ref validate`（via `npx skills-ref validate` 或 vendored 脚本）做规范层面的 L0 校验，再运行 MathArts 自定义的 L1/L2/L3 检查。第一阶段必须具备 L0+L1+L2。
+`cli.ts` 先调用 `skills-ref validate` 做 L0 校验，再运行 MathArts 自定义的 L1/L2 检查。第一阶段必须具备 L0+L1+L2。
 
 第二阶段可引入 L4：用 LLM-as-judge 对输出语气/结构打分，但第一阶段不强制。
 
-`tests/fixtures/` 至少包含：`valid-*.md`（合格范本）、`invalid-*.md`（应被拒样本，附期望错误码）、`expected/`（快照基准）。
+复杂 Skill 可在 `tests/scenarios/` 保存输入、rubric 和人工审查过的期望输出，供未来 L3 runner 复用。
 
-### 快照维护
+### L3 恢复条件
 
-L3 输出快照测试的 `tests/fixtures/expected/` 目录需要持续维护：
+恢复 L3 前必须通过新 RFC 确定可重复的 Agent runner、输入接口、评分规则，以及超时、费用和离线行为。未满足这些条件时，不得把静态文件比较称为 Skill 输出验证。
 
-| 场景 | 处理方式 |
-| ---- | -------- |
-| Skill 逻辑变更导致输出变化 | 人工审查新输出是否正确，正确则执行 `tools/cli.ts validate --check snapshot --update` 更新快照 |
-| Skill 逻辑变更导致输出错误 | 修复 Skill 逻辑，不更新快照 |
-| 新增测试用例 | 在 `tests/fixtures/` 添加输入文件，执行 `--update` 生成对应 `expected/` 快照 |
-| 快照文件冲突（多人同时更新） | 通过 Git 合并解决，优先保留最新逻辑对应的快照 |
-
-**快照更新责任**：
-
-- Skill 作者：在 PR 中提交快照更新，附带变更说明
-- Reviewer：审查快照差异是否符合预期，拒绝无说明的快照更新
-- CI：L3 快照校验失败时，输出 diff 但不阻断合并（第一阶段），提醒人工审查
-
-**快照格式**：快照文件为纯文本（Markdown 或 JSON），文件名与输入文件对应（如 `input/rfc-001.md` → `expected/rfc-001.output.md`）。
-
-## 18. 第一阶段实施顺序
+## 17. 第一阶段实施顺序
 
 ### 依赖关系图
 
@@ -943,7 +938,7 @@ flowchart TD
 - **步骤 6-8（readme/rfc/adr）可并行**：三者均仅依赖 matharts-doc-design，互不依赖。
 - **步骤 9-10（agent-guide → repo-bootstrap）为串行链**：bootstrap 依赖 agent-guide 生成的 AGENTS.md 骨架。
 
-## 19. 第一阶段验收标准
+## 18. 第一阶段验收标准
 
 - 仓库定位清楚；`README.md` 说明清楚仓库是什么；
 - `AGENTS.md` 说明清楚 Agent 如何维护本仓库；
@@ -958,7 +953,7 @@ flowchart TD
 - 安装路径走 `npx skills add matharts/skills --skill <name> -a opencode`，至少手工安装一条龙通过；
 - `tools/cli.ts validate` L0+L1+L2 可在 CI 中运行，且已集成 `skills-ref validate`。
 
-## 20. 后续扩展路线
+## 19. 后续扩展路线
 
 | 阶段 | 目标 | 时间预期 | 前置条件 | 新增 Skill |
 | ---- | ---- | -------- | -------- | ---------- |
@@ -968,7 +963,7 @@ flowchart TD
 | Phase 4 | 工程能力 | 2027 Q3 | 至少 2 个领域仓库（epheon/ziwei）进入 active 状态 | `matharts-repository-standard`、`matharts-code-review`、`matharts-test-design`、`matharts-rust-review`、`matharts-typescript-binding-review`、`matharts-npm-package-review` |
 | Phase 5 | 领域仓库本地 Skill | 2027 Q4+ | 至少 1 个领域仓库（epheon 或 ziwei）进入 active 状态，且该仓库有明确的算法文档或领域模型需求 | 各领域仓库 `.agents/skills/` 下的领域 Skill（如 `epheon/.agents/skills/epheon-algorithm-doc`、`ziwei/.agents/skills/ziwei-chart-model`） |
 
-## 21. 总结
+## 20. 核心设计结论
 
 `matharts/skills` 是一个基于 `skills/` 目录的 Agent Skills monorepo，每个 `skills/<skill-name>/` 都是可独立复制、安装、版本化和维护的 Skill 包。
 
@@ -984,7 +979,7 @@ flowchart TD
 
 第一批 7 个 Skill（见 §5）形成从"创建 Skill"到"记录决策"的完整闭环。
 
-## 22. 术语表
+## 21. 术语表
 
 | 术语 | 含义 |
 | ---- | ---- |
@@ -1004,7 +999,7 @@ flowchart TD
 | **monorepo** | 本仓库采用 monorepo 结构，所有 Skill 存放在 `skills/` 目录下，共享工具链和 CI/CD |
 | **self-contained** | Skill 分发期必须自包含，不依赖仓库根目录或其他 Skill 的共享文件 |
 
-## 23. 贡献指南
+## 22. 贡献指南
 
 ### 参与方式
 
@@ -1042,7 +1037,7 @@ flowchart LR
 | L1 结构完整 | ✅ | CI 自动检查 |
 | L2 自包含 | ✅ | CI 自动检查 |
 | description 质量 | ✅ | 人工审查：是否包含足够触发词 |
-| 测试覆盖 | ✅ | 至少包含 valid/invalid fixtures |
+| 测试覆盖 | ✅ | 规则使用单元测试；复杂行为保留场景、rubric 和期望输出 |
 | 文档同步 | ✅ | README.md 与 SKILL.md 一致 |
 | 向后兼容 | 条件 | active 状态的 Skill 必须保持 minor 兼容 |
 
@@ -1056,7 +1051,7 @@ flowchart LR
 - PR 审查：≤ 14 天
 - 紧急 bug 修复：≤ 3 天
 
-## 24. 设计决策记录
+## 23. 设计决策记录
 
 本文档记录了 `matharts/skills` 仓库设计过程中的关键决策及其理由。
 

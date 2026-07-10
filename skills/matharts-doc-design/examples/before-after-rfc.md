@@ -5,11 +5,13 @@
 ````markdown
 # Add sync rollback
 
-We need rollback because sync can overwrite files.
+Add rollback support for shared-source sync so maintainers can recover overwritten Skill files. `tools/cli.ts sync` can touch every Skill package, and a failed or mistaken sync should not require manual recovery across many directories.
+
+Skill packages must remain self-contained. Rollback must restore existing files and remove files created by sync.
 
 ## Plan
 
-Add backups.
+Create one backup batch per sync operation and store a manifest of touched files. Per-Skill backup directories are simpler, but cannot restore one sync operation as a unit. The backup manifest adds a small amount of toolchain state under `.sync-backup/`.
 ````
 
 ## After
@@ -20,7 +22,6 @@ Add backups.
 | Field | Value |
 | ----- | ----- |
 | Status | Draft |
-| Owner | MathArts Core |
 
 ## Summary
 

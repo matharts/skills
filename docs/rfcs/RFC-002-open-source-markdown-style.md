@@ -1,8 +1,11 @@
-# Open Source Markdown Style Design
+# RFC-002: Open Source Markdown Style Layer
 
-> Status: Draft for review
-> Date: 2026-07-10
-> Scope: `matharts-doc-design`
+| 属性 | 值 |
+| ---- | -- |
+| 状态 | Accepted |
+| 作者 | MathArts Core |
+| 日期 | 2026-07-10 |
+| 范围 | `matharts-doc-design` |
 
 ## Purpose
 
@@ -11,7 +14,7 @@ Upgrade `matharts-doc-design` from a general document formatting baseline into a
 - Review mode for `review` / 审查 / 评审 / 检查
 - Rewrite mode for 优化 / 改写 / 整理 / 标准化 / 美化
 
-The new layer should make MathArts documents feel more like mature open source documentation: useful at first contact, clear about contribution and governance boundaries, and precise when recording decisions.
+The new layer should make MathArts documents feel more like mature open source documentation: useful at first contact, clear about contribution and governance boundaries, and precise when recording decisions. `SKILL.md` keeps the execution workflow and loading rules concise; detailed style guidance lives in a self-contained reference loaded only when needed.
 
 ## Style Sources
 
@@ -35,7 +38,7 @@ The Skill should teach agents to structure Markdown around the reader's task pat
 4. Make decisions, constraints, and trade-offs explicit.
 5. Route contributors to the right process.
 
-This should become a named section in `SKILL.md`, such as `Open Source Markdown Style System`.
+Keep the mode selection, hard boundaries, and reference-loading rule in `SKILL.md`. Store the detailed style system in `references/open-source-style.md`, and load it only for document entry, reader path, document type, or open source collaboration structure tasks.
 
 ## Document Type Guidance
 
@@ -92,21 +95,49 @@ Rewrite mode should preserve facts while applying the style system:
 
 Add tests that verify:
 
-- `SKILL.md` and `README.md` mention the open source Markdown style system.
-- The Skill includes document type guidance for README, RFC, ADR, Guide, and AGENTS.md.
+- `SKILL.md` routes relevant tasks to `references/open-source-style.md`.
+- `README.md` and the reference describe the open source Markdown style system.
+- The reference includes document type guidance for README, RFC, ADR, Guide, and AGENTS.md.
 - Existing dual-mode guidance remains present.
-- L3 fixtures for `matharts-doc-design` cover review and rewrite examples with open source style language.
+- Forward-test scenarios, rubrics, and expected outputs cover review and rewrite behavior.
+- Before/after examples preserve source facts instead of inventing owners, commands, versions, or governance rules.
 
 Run:
 
 ```bash
-C:\Users\Administrator\.bun\bin\bun.exe test
-C:\Users\Administrator\.bun\bin\bun.exe tools\cli.ts check
+bun test skills/matharts-doc-design/tests
+bun tools/cli.ts validate --check all
 ```
 
 ## Out of Scope
 
-- Adding a full style guide under `references/`
+- Embedding the full style system directly in `SKILL.md`
 - Changing README/RFC/ADR Skill content contracts
 - Introducing rendered HTML or visual design assets
 - Copying proprietary wording or long passages from external projects
+
+## Alternatives
+
+### Keep all guidance in `SKILL.md`
+
+Not selected. It loads detailed document-type guidance for pure formatting tasks and duplicates content better suited to progressive disclosure.
+
+### Store the style system at the repository root
+
+Not selected. Distribution-time Skills must remain self-contained and cannot depend on repository-root files.
+
+## Compatibility
+
+The Skill name, triggers, dual workflow, and downstream contracts remain unchanged. The new reference ships inside the Skill package, so consumers do not need a separate installation step.
+
+## Migration
+
+No downstream migration is required. Agents continue loading `matharts-doc-design`; they additionally read the reference only when the routing rule applies.
+
+## Open Questions
+
+None. Automated behavior evaluation remains deferred under RFC-001.
+
+## Discussion
+
+Discuss changes in the Pull Request that implements this RFC.

@@ -90,10 +90,57 @@ test("Chinese style example explains the rewrite in Chinese", async () => {
   expect(content).not.toContain("## Why This Works");
 });
 
-test("mode fixtures separate raw scenarios from expected behavior", async () => {
+test("before and after examples preserve factual claims", async () => {
+  const cases = [
+    [
+      "before-after-readme.md",
+      [
+        "Shared Bun utilities for validating, syncing, and maintaining MathArts Skill packages.",
+        "bun tools/cli.ts check",
+        "bun tools/cli.ts sync",
+        "Changes to validation behavior require tests",
+      ],
+    ],
+    [
+      "before-after-rfc.md",
+      [
+        "Rollback must restore existing files and remove files created by sync.",
+        "Create one backup batch per sync operation and store a manifest of touched files.",
+        "Per-Skill backup directories",
+        ".sync-backup/",
+      ],
+    ],
+    [
+      "before-after-zh-style.md",
+      [
+        "MathArts Skill Registry 用于维护可分发的 Agent Skill。",
+        "维护者可以在这里创建、校验和发布 Skill 包。",
+        "bun tools/cli.ts check",
+        "修改共享规则",
+      ],
+    ],
+  ] as const;
+
+  for (const [example, facts] of cases) {
+    const content = await readFile(join(skillDir, "examples", example), "utf-8");
+    const before = content.match(/## Before\s+````markdown\n([\s\S]*?)\n````\s+## After/)?.[1] ?? "";
+    const after = content.match(/## After\s+````markdown\n([\s\S]*?)\n````/)?.[1] ?? "";
+
+    for (const fact of facts) {
+      expect(after).toContain(fact);
+      expect(before).toContain(fact);
+    }
+  }
+
+  const rfc = await readFile(join(skillDir, "examples", "before-after-rfc.md"), "utf-8");
+  const rfcAfter = rfc.match(/## After\s+````markdown\n([\s\S]*?)\n````/)?.[1] ?? "";
+  expect(rfcAfter).not.toContain("| Owner |");
+});
+
+test("mode contract artifacts separate raw scenarios from expected shapes", async () => {
   const fixture = await readFile(join(skillDir, "tests", "scenarios", "review-mode.md"), "utf-8");
   const expected = await readFile(
-    join(skillDir, "tests", "fixtures", "expected", "review-mode.md.output"),
+    join(skillDir, "tests", "scenarios", "review-mode.expected.md"),
     "utf-8",
   );
 
@@ -102,7 +149,7 @@ test("mode fixtures separate raw scenarios from expected behavior", async () => 
     "utf-8",
   );
   const rewriteExpected = await readFile(
-    join(skillDir, "tests", "fixtures", "expected", "rewrite-mode.md.output"),
+    join(skillDir, "tests", "scenarios", "rewrite-mode.expected.md"),
     "utf-8",
   );
 
@@ -111,7 +158,48 @@ test("mode fixtures separate raw scenarios from expected behavior", async () => 
   expect(expected).toContain("位置：");
   expect(expected).toContain("影响：");
   expect(expected).toContain("建议：");
-  expect(rewriteFixture).not.toContain("已优化：");
-  expect(rewriteExpected).toContain("已优化：docs/example.md");
-  expect(rewriteExpected).toContain("主要调整：");
+  expect(rewriteFixture).not.toContain("## 快速开始");
+  expect(rewriteExpected).toContain("# Example");
+  expect(rewriteExpected).toContain("## 快速开始");
+  expect(rewriteExpected).toContain("运行 `example start`。");
+  expect(rewriteExpected).not.toContain("已优化：");
+  expect(rewriteExpected).not.toContain("RFC");
+  expect(expected).not.toContain("RFC");
+});
+
+test("forward-test scenarios declare behavioral rubrics", async () => {
+  const reviewRubric = await readFile(
+    join(skillDir, "tests", "scenarios", "review-mode.rubric.md"),
+    "utf-8",
+  );
+  const rewriteRubric = await readFile(
+    join(skillDir, "tests", "scenarios", "rewrite-mode.rubric.md"),
+    "utf-8",
+  );
+
+  expect(reviewRubric).toContain("不得修改文件");
+  expect(reviewRubric).toContain("位置、影响和建议");
+  expect(rewriteRubric).toContain("不得虚构");
+  expect(rewriteRubric).toContain("直接返回改写稿");
+});
+
+test("combined and formatting-only scenarios cover conditional routing", async () => {
+  const combined = await readFile(
+    join(skillDir, "tests", "scenarios", "combined-mode.rubric.md"),
+    "utf-8",
+  );
+  const formatting = await readFile(
+    join(skillDir, "tests", "scenarios", "formatting-only-review.rubric.md"),
+    "utf-8",
+  );
+  const formattingExpected = await readFile(
+    join(skillDir, "tests", "scenarios", "formatting-only-review.expected.md"),
+    "utf-8",
+  );
+
+  expect(combined).toContain("组合模式");
+  expect(combined).toContain("先审查，再改写");
+  expect(formatting).toContain("不得输出 `Suggested Shape`");
+  expect(formatting).toContain("不得加载 `references/open-source-style.md`");
+  expect(formattingExpected).not.toContain("## Suggested Shape");
 });

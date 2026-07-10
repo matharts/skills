@@ -5,7 +5,9 @@
 ````markdown
 # tools
 
-一些内部工具。
+Shared Bun utilities for validating, syncing, and maintaining MathArts Skill packages.
+
+Use this package when you maintain `matharts/skills` or review Skill package changes.
 
 ## install
 
@@ -13,7 +15,9 @@ bun install
 
 ## usage
 
-run scripts in tools folder.
+Run `bun tools/cli.ts check` to validate all Skills. Run `bun tools/cli.ts sync` to sync shared source.
+
+Changes to validation behavior require tests and a short note in the relevant plan or design document.
 ````
 
 ## After

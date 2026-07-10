@@ -59,7 +59,7 @@ Expected: FAIL because the current Skill does not include the open source style 
 - Modify: `skills/matharts-doc-design/README.md`
 
 **Interfaces:**
-- Consumes: specification at `docs/superpowers/specs/2026-07-10-open-source-markdown-style-design.md`
+- Consumes: specification at `docs/rfcs/RFC-002-open-source-markdown-style.md`
 - Produces: self-contained Skill guidance for open source Markdown style
 
 - [ ] **Step 1: Add `Open Source Markdown Style System` to `SKILL.md`**
@@ -145,6 +145,6 @@ Expected: L0/L1/L2 pass; L3 passes for `matharts-doc-design`.
 Run:
 
 ```bash
-git add docs/superpowers/plans/2026-07-10-open-source-markdown-style.md skills/matharts-doc-design
+git add docs/plans/2026-07-10-open-source-markdown-style.md skills/matharts-doc-design
 git commit -m "feat: add open source markdown style guidance"
 ```
