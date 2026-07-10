@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const skillDir = import.meta.dir.replace(/\\tests$/, "");
+const skillDir = join(import.meta.dir, "..");
 
 test("matharts-doc-design documents dual review and rewrite modes", async () => {
   const skill = await readFile(join(skillDir, "SKILL.md"), "utf-8");
@@ -21,8 +21,9 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
     expect(content).toContain("中文技术文档风格");
     expect(content).toContain("协作边界");
     expect(content).toContain("Quick Start");
-    expect(content).toContain("Advanced Usage");
   }
+
+  expect(readme).toContain("Advanced Usage");
 
   expect(skill).toContain("用户说 `review`");
   expect(skill).toContain("Findings");
@@ -40,9 +41,7 @@ test("matharts-doc-design documents dual review and rewrite modes", async () => 
   expect(skill).toContain("建议：<可执行的修改动作>");
   expect(skill).toContain("当对应下游 Skill 存在时，以其模板字段为准");
   expect(skill).toContain("示例选择规则");
-  expect(skill).toContain("长 Skill 分层原则");
   expect(skill).toContain("不推荐输出");
-  expect(skill).toContain("先行为，后理念");
   expect(skill).toContain("优先读取与当前任务类型最接近的一个示例");
   expect(skill).toContain("何时不用");
   expect(skill).toContain("需要 README 内容完整性时，用 `matharts-doc-readme`");
@@ -83,4 +82,26 @@ test("matharts-doc-design discovery is scoped to design concerns", async () => {
   expect(description).toContain("style");
   expect(description).toContain("primary concern");
   expect(description.length).toBeLessThanOrEqual(500);
+});
+
+test("matharts-doc-design treats extends as a declaration, not runtime inheritance", async () => {
+  const skill = await readFile(join(skillDir, "SKILL.md"), "utf-8");
+  const consumers = ["matharts-doc-readme", "matharts-doc-rfc", "matharts-doc-adr"];
+
+  expect(skill).toContain("`metadata.extends` 只声明依赖关系，不会自动加载本 Skill");
+  expect(skill).not.toContain("通过 `metadata.extends` 继承通用文档设计规则");
+
+  for (const consumer of consumers) {
+    const consumerSkill = await readFile(join(skillDir, "..", consumer, "SKILL.md"), "utf-8");
+    expect(consumerSkill).toContain("必须同时加载并遵循 `matharts-doc-design`");
+  }
+});
+
+test("matharts-doc-design keeps document contracts in downstream skills", async () => {
+  const skill = await readFile(join(skillDir, "SKILL.md"), "utf-8");
+
+  expect(skill).toContain("只有下游 Skill 明确要求时，才把字段缺失列为 finding");
+  expect(skill).not.toContain("RFC/ADR 是否缺少替代方案、缺点或后果");
+  expect(skill).not.toContain("列表项超过 7 项");
+  expect(skill).not.toContain("每 50-80 行设置一个二级标题");
 });

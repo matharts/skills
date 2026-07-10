@@ -25,7 +25,6 @@ MathArts 文档设计诊断与改写基准层。它统一结构、视觉层级�
 ## Advanced Usage
 
 - 示例选择：优先读取与当前任务类型最接近的一个示例；跨 README、RFC、中文风格或审查输出时，再组合多个示例。
-- 长 Skill 分层：超过 250 行时先行为、后理念，高频规则靠前，边界声明放在末尾。
 - 下游优先：README/RFC/ADR 的内容合同由对应下游 Skill 定义，本 Skill 只处理结构、层级、语气和可读性。
 
 ## 诊断维度
@@ -131,11 +130,13 @@ MathArts 文档设计诊断与改写基准层。它统一结构、视觉层级�
 
 ## 被依赖
 
-以下 Skill 通过 `metadata.extends` 继承本 Skill 的文档设计规则：
+以下 Skill 通过 `metadata.extends` 声明对本 Skill 的依赖：
 
 - `matharts-doc-readme`
 - `matharts-doc-rfc`
 - `matharts-doc-adr`
+
+`metadata.extends` 不会触发自动安装或加载。消费方必须明确要求 Agent 同时加载并遵循 `matharts-doc-design`。
 
 ## 安装
 

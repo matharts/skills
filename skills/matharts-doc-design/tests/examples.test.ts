@@ -2,7 +2,7 @@ import { expect, test } from "bun:test";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const skillDir = import.meta.dir.replace(/\\tests$/, "");
+const skillDir = join(import.meta.dir, "..");
 
 test("matharts-doc-design ships and references practical examples", async () => {
   const skill = await readFile(join(skillDir, "SKILL.md"), "utf-8");
@@ -90,16 +90,28 @@ test("Chinese style example explains the rewrite in Chinese", async () => {
   expect(content).not.toContain("## Why This Works");
 });
 
-test("review fixtures follow structured finding format", async () => {
-  const fixture = await readFile(join(skillDir, "tests", "fixtures", "review-mode.md"), "utf-8");
+test("mode fixtures separate raw scenarios from expected behavior", async () => {
+  const fixture = await readFile(join(skillDir, "tests", "scenarios", "review-mode.md"), "utf-8");
   const expected = await readFile(
     join(skillDir, "tests", "fixtures", "expected", "review-mode.md.output"),
     "utf-8",
   );
 
-  for (const content of [fixture, expected]) {
-    expect(content).toContain("位置：");
-    expect(content).toContain("影响：");
-    expect(content).toContain("建议：");
-  }
+  const rewriteFixture = await readFile(
+    join(skillDir, "tests", "scenarios", "rewrite-mode.md"),
+    "utf-8",
+  );
+  const rewriteExpected = await readFile(
+    join(skillDir, "tests", "fixtures", "expected", "rewrite-mode.md.output"),
+    "utf-8",
+  );
+
+  expect(fixture).not.toContain("## Findings");
+  expect(expected).toContain("## Findings");
+  expect(expected).toContain("位置：");
+  expect(expected).toContain("影响：");
+  expect(expected).toContain("建议：");
+  expect(rewriteFixture).not.toContain("已优化：");
+  expect(rewriteExpected).toContain("已优化：docs/example.md");
+  expect(rewriteExpected).toContain("主要调整：");
 });

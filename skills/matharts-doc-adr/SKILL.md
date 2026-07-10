@@ -17,6 +17,8 @@ metadata:
 
 记录已经接受的重要决策（事后记录文档）。
 
+`metadata.extends` 只声明依赖关系。执行本 Skill 时，必须同时加载并遵循 `matharts-doc-design`；若两者冲突，以本 Skill 的 ADR 内容合同为准。
+
 ## 何时使用
 
 - RFC 被 Accepted 后需要记录最终决策

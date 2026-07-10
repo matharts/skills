@@ -17,6 +17,8 @@ metadata:
 
 生成和审查 MathArts 项目的 `README.md`。
 
+`metadata.extends` 只声明依赖关系。执行本 Skill 时，必须同时加载并遵循 `matharts-doc-design`；若两者冲突，以本 Skill 的 README 内容合同为准。
+
 ## 何时使用
 
 - 需要为新项目生成 README.md
@@ -56,4 +58,4 @@ metadata:
 
 ## 排版规则
 
-继承 `matharts-doc-design` 的全部排版规则。
+加载并遵循 `matharts-doc-design` 的排版规则。

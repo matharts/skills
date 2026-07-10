@@ -17,6 +17,8 @@ metadata:
 
 生成和审查重大变更提案（事前讨论文档）。
 
+`metadata.extends` 只声明依赖关系。执行本 Skill 时，必须同时加载并遵循 `matharts-doc-design`；若两者冲突，以本 Skill 的 RFC 内容合同为准。
+
 ## 何时使用
 
 - 需要提出影响架构、API、标准、算法策略的重大变更
