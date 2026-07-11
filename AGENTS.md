@@ -2,7 +2,7 @@
 
 ## 仓库定位
 
-`matharts/skills` 是 MathArts 开源生态的 Agent Capability Registry，遵循 [agentskills.io](https://agentskills.io) 规范。
+`matharts/skills` 是 MathArts Foundation 层的 Agent Capability Registry，遵循 [agentskills.io](https://agentskills.io) 规范。仓库职责边界、依赖方向和生命周期以 [`CHARTER.md`](CHARTER.md) 为准。
 
 ## 核心原则
 
@@ -34,6 +34,7 @@
 | `docs/guides/` | Skill 编写/审查指南 | 是（由 matharts-agent-skill-dev 维护） |
 | `internal/shared-source/` | 开发期共享内容暂存区 | 是（单向同步进各 Skill） |
 | `README.md` | 仓库说明 | 是 |
+| `CHARTER.md` | 仓库层级、职责边界、所有权和生命周期 | 谨慎（需 RFC） |
 | `AGENTS.md` | 本文件 | 是（由 matharts-agent-guide 维护） |
 | `LICENSE` | MIT 许可证 | 否 |
 | `docs/DESIGN.md` | 仓库设计文档 | 谨慎（需 RFC） |

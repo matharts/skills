@@ -6,6 +6,8 @@
 
 `matharts/skills` 是 MathArts 开源生态的 **Agent Capability Registry**，用于沉淀、维护、分发 MathArts 各项目共享的 Agent Skills 与能力模块，使 AI Agent 能够在不同 MathArts 仓库中稳定执行高质量任务。
 
+本仓库属于 **Foundation** 层。正式边界、所有权和生命周期见 [`CHARTER.md`](CHARTER.md)。
+
 GitHub 描述：Reusable Agent Skills and capability modules for the MathArts open-source ecosystem.
 
 ## 核心目标
@@ -61,10 +63,11 @@ npx skills add matharts/skills@v0.1.0 --skill matharts-doc-rfc -a opencode -y
 
 ## 生态位置
 
-- `matharts/standards` = 正式标准源头
-- `matharts/skills` = Agent 执行层（本仓库）
-- `matharts/docs` = 长期知识库
-- 项目仓库 = 安装 Skill 副本后运行
+- [`matharts/ecosystem`](https://github.com/matharts/ecosystem) = 组织治理、Agent Policy、候选与已接受规范的来源
+- `matharts/skills` = 领域无关的 Agent 工程能力与执行层（本仓库）
+- 项目仓库 = 保存领域和项目事实，安装所需 Skill 后执行真实任务
+
+Skill 内的参考摘要用于保证分发后自包含，不替代 `ecosystem` 或目标项目中的权威来源。边界调整提案见 [`RFC-003`](docs/rfcs/RFC-003-align-ecosystem-boundary.md)。
 
 ## 开发
 
