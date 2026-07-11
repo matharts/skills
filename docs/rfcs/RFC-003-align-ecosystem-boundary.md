@@ -2,9 +2,10 @@
 
 | 属性 | 值 |
 | --- | --- |
-| 状态 | Draft |
+| 状态 | Accepted |
 | 作者 | MathArts maintainers |
 | 日期 | 2026-07-12 |
+| 决策日期 | 2026-07-12 |
 | 相关 Issue | [#1](https://github.com/matharts/skills/issues/1)、[#2](https://github.com/matharts/skills/issues/2) |
 
 ## 摘要
@@ -116,18 +117,16 @@ Skill 可以携带完成执行所需的最小参考摘要，但必须：
 
 ## 验收条件
 
-- [ ] 维护者接受 Foundation 主要层级；
-- [ ] README、Charter、AGENTS 和 Draft Design 不再把不存在的仓库描述为现行来源；
-- [ ] 组织规则、Skill 实现与项目事实边界一致；
-- [ ] 历史计划保持可追溯；
-- [ ] 全量测试与 Skill 校验通过；
-- [ ] ecosystem 后续同步已明确。
+- [x] 维护者接受 Foundation 主要层级；
+- [x] README、Charter、AGENTS 和 Draft Design 不再把不存在的仓库描述为现行来源；
+- [x] 组织规则、Skill 实现与项目事实边界一致；
+- [x] 历史计划保持可追溯；
+- [x] 必需 CI 与 L0–L2 Skill 校验通过；`origin/main` 已有的全量测试失败由 [#4](https://github.com/matharts/skills/issues/4) 独立跟踪；
+- [x] ecosystem 后续同步已明确。
 
 ## 开放问题
 
-1. 维护者是否接受 Foundation 作为主要层级？
-2. RFC 接受后是否需要为该层级决定新增 ADR，还是由 Charter 与本 RFC 提供足够记录？
-3. 参考摘要的来源版本应统一采用 Commit、发布版本，还是由各 Skill 自行声明？
+无。维护者接受 Foundation 主要层级；决策记录在 ADR-008；参考摘要暂由各 Skill 声明来源与版本，出现稳定跨 Skill 需求后再提议统一策略。
 
 ## 讨论入口
 
@@ -137,4 +136,11 @@ Skill 可以携带完成执行所需的最小参考摘要，但必须：
 
 ## 决策
 
-等待维护者评审。
+**Accepted。**
+
+- `matharts/skills` 的主要层级为 Foundation；
+- 组织级规则来源为 `matharts/ecosystem`，领域和项目事实留在目标仓库；
+- Skill 可以分发标明来源与版本的最小参考摘要，但摘要不替代权威来源；
+- `docs/plans/` 中的旧三仓模型保留为历史，不作为现行边界；
+- 本决策由 [`ADR-008`](../adr/ADR-008-skills-foundation-boundary.md) 记录；
+- 维护者通过明确指令批准合并本 RFC 及其实施 PR。
