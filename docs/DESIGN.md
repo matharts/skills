@@ -5,9 +5,9 @@
 | 属性        | 值                                   |
 | ----------- | ------------------------------------ |
 | 文档状态    | Draft                                |
-| 版本        | 0.6.5                                |
-| 评审目标    | 对齐 agentskills.io 规范             |
-| 上次评审    | RFC-001：暂停占位式 L3 校验          |
+| 版本        | 0.7.0                                |
+| 评审目标    | 对齐 agentskills.io 与组织仓库边界   |
+| 上次评审    | RFC-003：对齐 ecosystem 边界（Draft）    |
 
 ## 如何使用本文档
 
@@ -38,6 +38,7 @@
 | 0.6.3  | 第六轮评审优化 | 新增"实施优先级指南"章节，标记各章节实施优先级（必需/可选）；§14.1 废弃流程标记为"第二阶段可选"；§15 预发布版本标记为"第二阶段可选"；§16 L3 测试标记为"第二阶段可选"；§12 扩展治理标记为"第二阶段可选"；§13 离线安装方案 2-3 标记为"第二阶段可选"；§9 release.yml 标记为"第二阶段可选"；§3.4.1 同步失败处理标记为"第二阶段可选"；§11 安全规范标记为"第二阶段可选"；§22 响应时间标记为"第二阶段可选"；§23 ADR-003-005 标记为"参考文档"；§19 Phase 2-5 标记为"待规划" |
 | 0.6.4  | 目录结构调整 | RFC 和 ADR 文档存储位置从 `rfcs/` 和 `adr/` 调整为 `docs/rfcs/` 和 `docs/adr/`，统一归入 docs 目录 |
 | 0.6.5  | L3 状态修正 | 根据 RFC-001 暂停未执行 Skill 的占位式 L3；保留 CLI 参数和人工前向测试资产，等待真实 Agent runner |
+| 0.7.0  | 组织边界对齐 | 根据 RFC-003 提议声明 Foundation 层级，以 `matharts/ecosystem` 承载组织规则，并删除对未建立 standards/docs 仓库的现行依赖 |
 
 </details>
 
@@ -65,15 +66,12 @@ GitHub 仓库描述（EN）：
 
 > 将 MathArts 的知识、规范、流程、工程经验和项目约定，封装为 AI Agent 可以稳定复用、组合和执行的能力。
 
-### 三个仓的分工
+### 组织规则、Skill 与项目事实的分工
 
 ```mermaid
 flowchart LR
-  subgraph Standards["matharts/standards"]
-    S1["正式标准源头"]
-  end
-  subgraph Docs["matharts/docs"]
-    D1["长期知识库"]
+  subgraph Ecosystem["matharts/ecosystem"]
+    E1["组织治理<br/>Policy / Standard / Guidance / Template"]
   end
   subgraph Skills["matharts/skills"]
     SK1["Agent 执行层<br/>Skill 包 + 参考快照"]
@@ -81,14 +79,14 @@ flowchart LR
   subgraph Project["项目仓库<br/>epheon/ziwei/..."]
     P1[".agents/skills/<br/>已安装的 Skill 副本"]
   end
-  S1 -->|被消费/快照| Skills
+  E1 -->|明确采用/参考摘要| Skills
   Skills -->|安装/复制| Project
-  Docs -.->|可选引用| Skills
+  Project -.->|领域与项目事实| Skills
 ```
 
-- **`matharts/standards`**：正式标准源头
+- **`matharts/ecosystem`**：组织治理、Agent Policy、候选与已接受规范的来源
 - **`matharts/skills`**：Agent 执行层；每个 Skill 内的 `references/*.snapshot.md` 保存执行所需的标准摘要或快照
-- **项目仓库**：安装所选 Skill 的副本，并在本地执行
+- **项目仓库**：保存领域与项目事实，安装所选 Skill 的副本并执行真实任务
 
 ## 实施范围
 
@@ -210,7 +208,7 @@ flowchart LR
 ```
 
 - `internal/shared-source/` = 开发期单一信源（prompt 片段、共享模板、共享引用）
-- `internal/shared-source/` 的内容来自对 `matharts/standards` 的裁剪摘要以及本仓库沉淀的共享 prompt 片段，**不是**正式标准本身
+- `internal/shared-source/` 的内容来自对 `matharts/ecosystem` 或目标项目权威资产的裁剪摘要，以及本仓库沉淀的共享 prompt 片段，**不是**正式标准本身
 - `tools/sync-shared-source.ts` 在打包/发布前把共享内容**单向物理复制**进各 Skill 的 `references/` 与 `assets/`；Skill 侧的本地修改不应反向同步回 `internal/`，如需调整应在 `internal/shared-source/` 修改后重新同步
 - `tools/cli.ts validate` 强制校验：任何 Skill 不得出现指向 `internal/` 或仓库根的相对路径；分发产物中不存在 `internal/`
 
@@ -226,13 +224,13 @@ flowchart LR
 | 目标 Skill 目录权限不足 | 中止同步，输出错误信息，由用户修复权限后重试 |
 | 目标文件已被手动修改 | 默认覆盖（单向同步）；带 `--interactive` 参数时提示用户选择 |
 | 源文件语法错误（如 YAML frontmatter 不合法） | 中止同步，输出错误位置和原因 |
-| 网络错误（从远程 standards 仓库拉取时） | 重试 3 次，间隔 5 秒；仍失败则使用本地缓存（如有） |
+| 网络错误（获取远程参考来源时） | 重试 3 次，间隔 5 秒；仍失败则使用本地缓存（如有） |
 
 **回滚机制**：同步前自动在 `.sync-backup/` 目录备份目标文件，失败时可通过 `sync-shared-source.ts --rollback` 恢复。
 
-### 3.5 `skills` 仓库不承担正式 standards 职责
+### 3.5 `skills` 仓库不承担组织规则职责
 
-正式标准未来放在 `matharts/standards` 或 `matharts/docs`。`matharts/skills` 消费标准并将其转化为 Agent 可执行能力（通过 Skill 内的 `references/*.snapshot.md`）。
+组织治理、Agent Policy、候选与已接受规范由 `matharts/ecosystem` 承载。`matharts/skills` 只消费任务明确采用的来源，并通过 Skill 内的 `references/*.snapshot.md` 将必要摘要转化为 Agent 可执行能力。
 
 ### 3.6 通用 Skill 放在 `matharts/skills`，领域 Skill 下沉到领域仓库
 
@@ -254,8 +252,8 @@ bazi/.agents/skills/bazi-algorithm-doc/
 
 - 仅包含该 Skill 完成任务所必需的最小规则片段；
 - 不代表 MathArts 的正式标准，也不承担标准制定职责；
-- 当 `matharts/standards` 或 `internal/shared-source/` 发生变更时，由 `tools/sync-shared-source.ts` 或 `matharts-agent-skill-dev` 发起重新同步；
-- 项目仓库如需确认标准原文，应以 `matharts/standards` 为准。
+- 当来源资产或 `internal/shared-source/` 发生变更时，由明确维护任务或 `matharts-agent-skill-dev` 发起重新同步；
+- 使用者需要确认完整规则时，应回到 `matharts/ecosystem` 或目标项目的权威文件。
 
 > 结论：`matharts/skills` 消费标准并转化为 Agent 可执行能力，但仍然是**消费方**而非**标准源头**。
 
@@ -296,7 +294,7 @@ Agent Skills、Skill 能力包、执行规则、参考摘要、模板资产、�
 
 ### 4.2 本仓库不负责
 
-MathArts 正式文档/工程/治理标准（→ `matharts/standards`）、组织级贡献规范（→ `matharts/.github`）、长期知识库（→ `matharts/docs`）、领域算法/术语/模型规则（→ 各领域仓库 `.agents/skills/`）。
+MathArts 组织治理、工程与 Agent 规范（→ `matharts/ecosystem`）、组织级贡献与 GitHub 平台默认配置（→ `matharts/.github`）、领域算法/术语/模型规则（→ 各领域仓库）。
 
 ## 5. 第一批 Skill
 
